@@ -4,10 +4,6 @@
 using namespace std;
 using namespace sf;
 
-/*void SpriteComponent::update(float dt) {
-	_sprite->setPosition(_parent->getPosition());
-}*/
-
 void ShapeComponent::update(float dt) {
 	_shape->setPosition(_parent->getPosition());
 }

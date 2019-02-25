@@ -24,17 +24,6 @@ void Entity::render() {
 	}
 }
 
-/*void EntityManager::update(const float dt) {
-	for (auto e : list) {
-		e->update(dt);
-	}
-}
-void EntityManager::render() {
-	for (auto e : list) {
-		e->render();
-	}
-}*/
-
 float Entity::getRotation() const { return _rotation; }
 
 void Entity::setRotation(float _rotation) { Entity::_rotation = _rotation; }
