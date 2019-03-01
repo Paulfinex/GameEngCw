@@ -13,15 +13,23 @@ void PlayerMovementComponent::update(float dt) {
 	sf::Vector2f displacement = { 0.0f, 0.0f };
 	if (Keyboard::isKeyPressed(Keyboard::Left)) {
 		displacement.x--;
+		_facing = LEFT;
+		miningDirection = { -25.f,0.f };
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Right)) {
 		displacement.x++;
+		_facing = RIGHT;
+		miningDirection = { 25.f,0.f };
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Up)) {
 		displacement.y--;
+		_facing = UP;
+		miningDirection = { 0.f,25.f };
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Down)) {
 		displacement.y++;
+		_facing = DOWN;
+		miningDirection = { 0.f,-25.f };
 	}
 	// Normalise displacement
 	float l = sqrt(displacement.x * displacement.x + displacement.y * displacement.y);
@@ -32,4 +40,9 @@ void PlayerMovementComponent::update(float dt) {
 
 	move((float)dt * displacement * _speed);
 
+}
+
+sf::Vector2f PlayerMovementComponent::getMiningDirection()
+{
+	return miningDirection;
 }

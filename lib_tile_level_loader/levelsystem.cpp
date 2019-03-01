@@ -22,8 +22,9 @@ size_t LevelSystem::getWidth() {
 }
 
 std::map<LevelSystem::TILE, sf::Color> LevelSystem::_colours{
-	{WALL, Color::White},
-	{END, Color::Red}
+	{WALL, Color::Black},
+	{EMPTY, Color::White},
+	{START, Color::Yellow}
 };
 
 sf::Color LevelSystem::getColor(LevelSystem::TILE t) {
@@ -91,13 +92,11 @@ void LevelSystem::loadLevelFile(const std::string &path, float tileSize) {
 	// Add the last line in height
 	// (it doesn't have \n)
 	h++;
-
 	if (temp_tiles.size() != (w * h)) {
 		// something went wrong
 		throw string("Can't parse level file ") + path;
 	}
 
-	// Now we now how big the level is, make an array
 	_tiles = std::make_unique<TILE[]>(w * h);
 	_width = w; // set static class vars
 	_height = h;
@@ -112,7 +111,7 @@ void LevelSystem::buildSprites() {
 		for (size_t x = 0; x < LevelSystem::_width; ++x) {
 			auto s = make_unique<sf::RectangleShape>();
 			s->setPosition(getTilePosition({ x, y }));
-			// Note: remember to use `static_cast`, not normal casting
+
 			s->setSize(Vector2f(_tileSize, _tileSize));
 			s->setFillColor(getColor(getTile({ x, y })));
 			_sprites.push_back(move(s));

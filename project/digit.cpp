@@ -1,14 +1,18 @@
 #include "digit.h"
 #include "cmp_sprite.h"
 #include "levelsystem.h"
-
-#define GHOST_COUNT 4
+#include "cmp_sprite.h"
+#include "cmp_actor_movement.h"
+#include "cmp_player_movement.h"
+#include "cmp_enemy_ai.h"
+#include "levelsystem.h"
 
 using namespace std;
 using namespace sf;
 
 shared_ptr<Entity> player;
 vector<shared_ptr<Entity>> ghosts;
+vector<shared_ptr<Entity>> breakableBlocks; 
 
 void MenuScene::update(float dt) {
 	if (Keyboard::isKeyPressed(Keyboard::Space)) {
@@ -30,12 +34,12 @@ void GameScene::update(float dt) {
 		activeScene = menuScene;
 	}
 
-	// Reset game when ghost hists pacman
-	for (auto& g : ghosts) {
-		if (length(g->getPosition() - player->getPosition()) < 30.f) {
-			respawn();
-		}
-	}
+	//// Reset game when ghost hists pacman
+	//for (auto& g : ghosts) {
+	//	if (length(g->getPosition() - player->getPosition()) < 30.f) {
+	//		respawn();
+	//	}
+	//}
 
 	Scene::update(dt);
 }
@@ -46,8 +50,16 @@ void GameScene::render() {
 }
 
 void GameScene::respawn() {
-	//player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]));
-	//player->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(150.f);
+	Vector2f temp = { 25.0f,25.0f };
+	player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]) + temp);
+	player->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(150.f);
+
+	auto block_spawn = ls::findTiles(ls::WALL);
+	int i = 0;
+	for (auto& s : breakableBlocks) {
+		s->setPosition(ls::getTilePosition(block_spawn[i]));
+		i++;
+	}
 
 	//auto ghost_spawns = ls::findTiles(ls::ENEMY);
 	//for (auto& g : ghosts) {
@@ -60,19 +72,31 @@ void GameScene::respawn() {
 void GameScene::load() {
 
 	ls::loadLevelFile("res/maps/map1.txt", 50.f);
+	int breakableBlockCount = (ls::findTiles(ls::WALL)).size();
+	Vector2f temp = { 50.0f,50.0f };
+	{
+		player = make_shared<Entity>();
 
-	//{
-	//	player = make_shared<Entity>();
+		auto s = player->addComponent<ShapeComponent>();
+		s->setShape<sf::CircleShape>(12.f);
+		s->getShape().setFillColor(Color::Red);
+		s->getShape().setOrigin({ 12.f, 12.f });
 
-	//	auto s = player->addComponent<ShapeComponent>();
-	//	s->setShape<sf::CircleShape>(12.f);
-	//	s->getShape().setFillColor(Color::Yellow);
-	//	s->getShape().setOrigin({ 12.f, 12.f });
+		player->addComponent<PlayerMovementComponent>();
 
-	//	//player->addComponent<PlayerMovementComponent>();
+		_ents.list.push_back(player);
+	}
 
-	//	_ents.list.push_back(player);
-	//}
+	for (int i = 0; i < breakableBlockCount; ++i) {
+		auto breakableBlock = make_shared<Entity>();
+		auto s = breakableBlock->addComponent<ShapeComponent>();
+		s->setShape<sf::RectangleShape>(temp);
+		s->getShape().setFillColor(Color::Green);
+		s->getShape().setOrigin({ 0.f, 0.f });
+
+		_ents.list.push_back(breakableBlock);
+		breakableBlocks.push_back(breakableBlock);
+	}
 
 	//const sf::Color ghost_cols[]{ {208, 62, 25},		// red Blinky
 	//							  {219, 133, 28},		// orange Clyde
@@ -92,7 +116,7 @@ void GameScene::load() {
 	//	ghosts.push_back(ghost);
 	//}
 
-	//respawn();
+	respawn();
 
 }
 

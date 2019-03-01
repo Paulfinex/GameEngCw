@@ -9,4 +9,8 @@ public:
 	PlayerMovementComponent() = delete;
 	void render() override {}
 	void update(float dt) override;
+	enum facing { LEFT, RIGHT, UP, DOWN };
+	facing _facing;
+	sf::Vector2f miningDirection;
+	sf::Vector2f getMiningDirection();
 };

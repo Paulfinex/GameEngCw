@@ -10,7 +10,7 @@
 
 class LevelSystem {
 public:
-	enum TILE { EMPTY, START, END, WALL, ENEMY, WAYPOINT };
+	enum TILE { EMPTY, START, END, WALL, ENEMY, WAYPOINT, BREAKABLE };
 
 	static void loadLevelFile(const std::string&, float tileSize = 100.f);
 	static void render(sf::RenderWindow &window);

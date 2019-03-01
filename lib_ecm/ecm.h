@@ -16,7 +16,6 @@ protected:
 	bool _alive;		// should be updated
 	bool _visible;		// should be rendered
 	bool _fordeletion;	// should be deleted
-
 public:
 	Entity();
 	virtual ~Entity();
