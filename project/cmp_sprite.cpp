@@ -4,6 +4,7 @@
 using namespace std;
 using namespace sf;
 
+// need to be reworked to load sprites (check space invaders)
 void ShapeComponent::update(float dt) {
 	_shape->setPosition(_parent->getPosition());
 }

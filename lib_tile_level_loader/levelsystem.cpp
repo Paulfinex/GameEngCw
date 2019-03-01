@@ -24,7 +24,7 @@ size_t LevelSystem::getWidth() {
 std::map<LevelSystem::TILE, sf::Color> LevelSystem::_colours{
 	{WALL, Color::Black},
 	{EMPTY, Color::White},
-	{START, Color::Yellow}
+	{START, Color::Yellow},
 };
 
 sf::Color LevelSystem::getColor(LevelSystem::TILE t) {
@@ -78,6 +78,9 @@ void LevelSystem::loadLevelFile(const std::string &path, float tileSize) {
 			break;
 		case 'n':
 			temp_tiles.push_back(ENEMY);
+			break;
+		case 'b':
+			temp_tiles.push_back(BREAKABLE);
 			break;
 		case '\n': // end of line
 			if (w == 0) { // if we haven't written width yet

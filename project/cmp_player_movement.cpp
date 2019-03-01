@@ -31,7 +31,7 @@ void PlayerMovementComponent::update(float dt) {
 		_facing = DOWN;
 		miningDirection = { 0.f,-25.f };
 	}
-	// Normalise displacement
+ 	// Normalise displacement
 	float l = sqrt(displacement.x * displacement.x + displacement.y * displacement.y);
 	if (l != 0) {
 		displacement.x = displacement.x / l;

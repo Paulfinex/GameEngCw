@@ -6,6 +6,7 @@
 #include "cmp_player_movement.h"
 #include "cmp_enemy_ai.h"
 #include "levelsystem.h"
+#include "cmp_tile.h"
 
 using namespace std;
 using namespace sf;
@@ -41,6 +42,20 @@ void GameScene::update(float dt) {
 	//	}
 	//}
 
+	/*int i = 0;
+	if (Keyboard::isKeyPressed(Keyboard::Space))
+	{
+		for (auto& block : breakableBlocks)
+		{
+			auto s = player->addComponent<PlayerMovementComponent>();
+			if (length(block->getPosition() - player->GetCompatibleComponent<PlayerMovementComponent>()[1]->miningDirection) < 10.f)
+			{
+				block->setForDelete();
+			}
+			i++;
+		}
+	}
+	*/
 	Scene::update(dt);
 }
 
@@ -54,7 +69,7 @@ void GameScene::respawn() {
 	player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]) + temp);
 	player->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(150.f);
 
-	auto block_spawn = ls::findTiles(ls::WALL);
+	auto block_spawn = ls::findTiles(ls::BREAKABLE);
 	int i = 0;
 	for (auto& s : breakableBlocks) {
 		s->setPosition(ls::getTilePosition(block_spawn[i]));
@@ -72,9 +87,8 @@ void GameScene::respawn() {
 void GameScene::load() {
 
 	ls::loadLevelFile("res/maps/map1.txt", 50.f);
-	int breakableBlockCount = (ls::findTiles(ls::WALL)).size();
+	int breakableBlockCount = (ls::findTiles(ls::BREAKABLE)).size();
 	Vector2f temp = { 50.0f,50.0f };
-	{
 		player = make_shared<Entity>();
 
 		auto s = player->addComponent<ShapeComponent>();
@@ -83,17 +97,17 @@ void GameScene::load() {
 		s->getShape().setOrigin({ 12.f, 12.f });
 
 		player->addComponent<PlayerMovementComponent>();
-
 		_ents.list.push_back(player);
-	}
 
 	for (int i = 0; i < breakableBlockCount; ++i) {
 		auto breakableBlock = make_shared<Entity>();
 		auto s = breakableBlock->addComponent<ShapeComponent>();
+		breakableBlock->addComponent<TileComponent>();
 		s->setShape<sf::RectangleShape>(temp);
 		s->getShape().setFillColor(Color::Green);
 		s->getShape().setOrigin({ 0.f, 0.f });
 
+		breakableBlock->addComponent<TileComponent>();
 		_ents.list.push_back(breakableBlock);
 		breakableBlocks.push_back(breakableBlock);
 	}
