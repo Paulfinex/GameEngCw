@@ -11,6 +11,7 @@ TileComponent::TileComponent(Entity * p) :Component(p)
 
 void TileComponent::hitHandler()
 {
+
 	if (_health > 0)
 	{
 		_health--;

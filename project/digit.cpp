@@ -42,20 +42,22 @@ void GameScene::update(float dt) {
 	//	}
 	//}
 
-	/*int i = 0;
+	int i = 0;
 	if (Keyboard::isKeyPressed(Keyboard::Space))
 	{
 		for (auto& block : breakableBlocks)
 		{
-			auto s = player->addComponent<PlayerMovementComponent>();
-			if (length(block->getPosition() - player->GetCompatibleComponent<PlayerMovementComponent>()[1]->miningDirection) < 10.f)
+			if (length(block->getPosition() - (player->getPosition() + player->GetCompatibleComponent<PlayerMovementComponent>()[0]->miningDirection)) < 25.f)
 			{
-				block->setForDelete();
+				block->get_components<TileComponent>()[0]->hitHandler();
+				if (block->get_components<TileComponent>()[0]->getHealth() == 0)
+				{
+					block->setForDelete();
+				}
 			}
 			i++;
 		}
 	}
-	*/
 	Scene::update(dt);
 }
 
