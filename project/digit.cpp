@@ -16,6 +16,8 @@ using namespace sf;
 shared_ptr<Entity> player;
 vector<shared_ptr<Entity>> ghosts;
 vector<shared_ptr<Entity>> breakableBlocks; 
+Vector2f temp = { 25.0f,25.0f };
+Vector2f temp2 = { 50.0f, 50.0f };
 
 void MenuScene::load() {}
 
@@ -34,7 +36,24 @@ void GameScene::load() {
 
 	ls::loadLevelFile("res/maps/map1.txt", 50.f);
 	size_t breakableBlockCount = (ls::findTiles(ls::BREAKABLE)).size();
-	Vector2f temp = { 50.0f,50.0f };
+	auto block_spawn = ls::findTiles(ls::BREAKABLE);
+
+	for (int i = 0; i < breakableBlockCount; ++i) {
+		auto breakableBlock = make_shared<Entity>();
+		auto s = breakableBlock->addComponent<ShapeComponent>();
+		s->setShape<sf::RectangleShape>(temp2);
+		s->getShape().setFillColor(Color::Green);
+		s->getShape().setOrigin({ 0.f, 0.f });
+
+		BlockManager::addBreakableBlocks(ls::getTilePosition(block_spawn[i]));
+		breakableBlock->setPosition(ls::getTilePosition(block_spawn[i]));
+
+		breakableBlock->addComponent<TileComponent>();
+
+		_ents.list.push_back(breakableBlock);
+		breakableBlocks.push_back(breakableBlock);
+	}
+
 	player = make_shared<Entity>();
 
 	auto s = player->addComponent<ShapeComponent>();
@@ -45,20 +64,8 @@ void GameScene::load() {
 	player->addComponent<PlayerMovementComponent>();
 	_ents.list.push_back(player);
 
-	for (int i = 0; i < breakableBlockCount; ++i) {
-		auto breakableBlock = make_shared<Entity>();
-		auto s = breakableBlock->addComponent<ShapeComponent>();
-		s->setShape<sf::RectangleShape>(temp);
-		s->getShape().setFillColor(Color::Green);
-		s->getShape().setOrigin({ 0.f, 0.f });
+	respawn();
 
-		sf::Vector2f pos = ls::getTilePosition(ls::findTiles(ls::BREAKABLE)[i]);
-		BlockManager::addBreakableBlocks(pos);
-	
-		breakableBlock->addComponent<TileComponent>();
-		_ents.list.push_back(breakableBlock);
-		breakableBlocks.push_back(breakableBlock);
-	}
 
 	//const sf::Color ghost_cols[]{ {208, 62, 25},		// red Blinky
 	//							  {219, 133, 28},		// orange Clyde
@@ -78,8 +85,6 @@ void GameScene::load() {
 	//	ghosts.push_back(ghost);
 	//}
 
-	respawn();
-
 }
 
 void GameScene::update(float dt) {
@@ -96,14 +101,19 @@ void GameScene::update(float dt) {
 	//}
 
 	int i = 0;
- 	if (Keyboard::isKeyPressed(Keyboard::Space))
+ 	if (Keyboard::isKeyPressed(Keyboard::Z))
 	{
- 	for (auto& block : breakableBlocks)
+ 		for (auto& block : breakableBlocks)
 		{
-		cout << length(block->getPosition() - (player->getPosition() + player->GetCompatibleComponent<PlayerMovementComponent>()[0]->miningDirection)) << endl;
- 			if (length(block->getPosition() - (player->getPosition() + player->GetCompatibleComponent<PlayerMovementComponent>()[0]->miningDirection)) < 25.f)
+			cout << "Block " << block->getPosition() << endl;
+			cout << "Player " << player->getPosition() << endl;
+			cout << "Distance " << length(block->getPosition() - player->getPosition()) << endl;
+
+ 			if ( length(block->getPosition() + temp  - (player->getPosition() + 
+				player->GetCompatibleComponent<PlayerMovementComponent>()[0]->getMiningDirection())) < 30.f)
 			{
 				block->get_components<TileComponent>()[0]->hitHandler();
+
 				if (block->get_components<TileComponent>()[0]->getHealth() == 0)
 				{
 					BlockManager::EraseBlock(block->getPosition());
@@ -123,23 +133,21 @@ void GameScene::render() {
 }
 
 void GameScene::respawn() {
-	Vector2f temp = { 25.0f,25.0f };
-	player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]) + temp);
-	player->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(150.f);
-
-	auto block_spawn = ls::findTiles(ls::BREAKABLE);
+	/*auto block_spawn = ls::findTiles(ls::BREAKABLE);
 	int i = 0;
 	for (auto& s : breakableBlocks) {
 		s->setPosition(ls::getTilePosition(block_spawn[i]));
 		i++;
-	}
+	}*/
+
+	player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]) + temp);
+	player->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(150.f);
 
 	//auto ghost_spawns = ls::findTiles(ls::ENEMY);
 	//for (auto& g : ghosts) {
 	//	g->setPosition(ls::getTilePosition(ghost_spawns[rand() % GHOST_COUNT]));
 	//	g->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(100.f);
 	//}
-
 }
 
 

@@ -11,6 +11,7 @@ ActorMovementComponent::ActorMovementComponent(Entity* p)
 	: _speed(100.0f), Component(p) {}
 
 bool ActorMovementComponent::validMove(const sf::Vector2f& pos) {
+	Vector2f temp = { 25.f, 25.f };
 	auto blocks = BlockManager::getBreakableBlocks();
 	bool pass = true;
 	if (LevelSystem::getTileAt(pos) != LevelSystem::BREAKABLE)
@@ -24,7 +25,7 @@ bool ActorMovementComponent::validMove(const sf::Vector2f& pos) {
 		else {
 			for (auto b : blocks)
 			{
-				if (length(b - pos) > 25.f)
+				if (length(b + temp - pos) < 25.f)
 				{
 					pass = false;
 				}

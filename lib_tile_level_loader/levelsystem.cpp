@@ -25,6 +25,7 @@ std::map<LevelSystem::TILE, sf::Color> LevelSystem::_colours{
 	{WALL, Color::Black},
 	{EMPTY, Color::White},
 	{START, Color::Yellow},
+	{BREAKABLE, Color::White}
 };
 
 sf::Color LevelSystem::getColor(LevelSystem::TILE t) {
