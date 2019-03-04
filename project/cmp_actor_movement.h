@@ -14,7 +14,7 @@ public:
 	float getSpeed() const;
 	void setSpeed(float _speed);
 
-	void move(const sf::Vector2f&);
+	void ActorMovementComponent::move(const sf::Vector2f& p);
 	void move(float x, float y);
 
 	void render() override {}

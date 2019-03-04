@@ -1,5 +1,7 @@
 #include "cmp_tile.h"
 
+int _health = 2;
+
 void TileComponent::update(float dt)
 {
 

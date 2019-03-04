@@ -33,14 +33,6 @@ add_library(lib_ecm STATIC ${SOURCE_FILES})
 target_include_directories(lib_ecm INTERFACE "${CMAKE_SOURCE_DIR}/lib_ecm" )
 target_link_libraries(lib_ecm PRIVATE lib_maths)
 
-## Pacman
-file(GLOB_RECURSE SOURCES pacman/*.cpp pacman/*.h)
-add_executable(pacman ${SOURCES} )
-target_include_directories(pacman SYSTEM PRIVATE ${SFML_INCS})
-target_link_libraries(pacman lib_tile_level_loader lib_ecm sfml-graphics)
-set_target_properties(pacman PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration))
-add_dependencies(pacman copy_resources)
-
 ## Project
 file(GLOB_RECURSE SOURCES project/*.cpp project/*.h)
 add_executable(PROJECT ${SOURCES} )
