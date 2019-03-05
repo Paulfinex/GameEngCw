@@ -9,7 +9,7 @@ static const Vector2i directions[] = { { 1, 0 },{ 0, 1 },{ 0, -1 },{ -1, 0 } };
 EnemyAIComponent::EnemyAIComponent(Entity* p)
 	: _direction(directions[(rand() % 4)]), _state(ROAMING), ActorMovementComponent(p) {}
 
-void EnemyAIComponent::update(float dt) {
+void EnemyAIComponent::update(double dt) {
 
 	// Amount to move
 	const auto mva = (float)(dt * _speed);

@@ -1,17 +1,18 @@
 #include "cmp_actor_movement.h"
 #include <levelsystem.h>
 #include <map>
-#include "cmp_block_manager.h"
+#include "../cmp_block_manager.h"
+#include <engine.h>
+#include <iostream>
 
 using namespace sf;
 
-void ActorMovementComponent::update(float dt) {}
+void ActorMovementComponent::update(double dt) {}
 
 ActorMovementComponent::ActorMovementComponent(Entity* p)
 	: _speed(100.0f), Component(p) {}
 
 bool ActorMovementComponent::validMove(const sf::Vector2f& pos) {
-	Vector2f temp = { 25.f, 25.f };
 	auto blocks = BlockManager::getBreakableBlocks();
 	bool pass = true;
 	if (LevelSystem::getTileAt(pos) != LevelSystem::BREAKABLE)
@@ -25,7 +26,7 @@ bool ActorMovementComponent::validMove(const sf::Vector2f& pos) {
 		else {
 			for (auto b : blocks)
 			{
-				if (length(b + temp - pos) < 25.f)
+				if (length(b - pos) < 25.f)
 				{
 					pass = false;
 				}

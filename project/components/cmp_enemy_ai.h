@@ -12,5 +12,5 @@ public:
 	explicit EnemyAIComponent(Entity* p);
 	EnemyAIComponent() = delete;
 	void render() override {}
-	void update(float dt) override;
+	void update(double dt) override;
 };

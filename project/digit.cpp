@@ -1,14 +1,17 @@
 #include "digit.h"
-#include "cmp_sprite.h"
 #include "levelsystem.h"
-#include "cmp_sprite.h"
-#include "cmp_actor_movement.h"
-#include "cmp_player_movement.h"
-#include "cmp_enemy_ai.h"
+#include "components/cmp_sprite.h"
+#include "components/cmp_actor_movement.h"
+#include "components/cmp_player_movement.h"
+#include "components/cmp_enemy_ai.h"
 #include "levelsystem.h"
-#include "cmp_tile.h"
+//#include "components/cmp_player_physics.h"
+#include "components//cmp_physics.h"
+#include "components/cmp_tile.h"
 #include "cmp_block_manager.h"
 #include <map>
+#include "system_renderer.h"
+#include "engine.h"
 
 using namespace std;
 using namespace sf;
@@ -16,53 +19,59 @@ using namespace sf;
 shared_ptr<Entity> player;
 vector<shared_ptr<Entity>> ghosts;
 vector<shared_ptr<Entity>> breakableBlocks; 
-Vector2f temp = { 25.0f,25.0f };
-Vector2f temp2 = { 50.0f, 50.0f };
 
-void MenuScene::load() {}
+void GameScene::Load() {
 
-void MenuScene::update(float dt) {
-	if (Keyboard::isKeyPressed(Keyboard::Tab)) {
-		activeScene = gameScene;
-	}
-	Scene::update(dt);
-}
+	ls::loadLevelFile("res/maps/map1.txt", 40.f);
+	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
+	ls::setOffset(Vector2f(0, ho));
 
-void MenuScene::render() {
-	Scene::render();
-}
-
-void GameScene::load() {
-
-	ls::loadLevelFile("res/maps/map1.txt", 50.f);
-	size_t breakableBlockCount = (ls::findTiles(ls::BREAKABLE)).size();
-	auto block_spawn = ls::findTiles(ls::BREAKABLE);
-
-	for (int i = 0; i < breakableBlockCount; ++i) {
-		auto breakableBlock = make_shared<Entity>();
-		auto s = breakableBlock->addComponent<ShapeComponent>();
-		s->setShape<sf::RectangleShape>(temp2);
-		s->getShape().setFillColor(Color::Green);
-		s->getShape().setOrigin({ 0.f, 0.f });
-
-		BlockManager::addBreakableBlocks(ls::getTilePosition(block_spawn[i]));
-		breakableBlock->setPosition(ls::getTilePosition(block_spawn[i]));
-
-		breakableBlock->addComponent<TileComponent>();
-
-		_ents.list.push_back(breakableBlock);
-		breakableBlocks.push_back(breakableBlock);
+	// Create Player
+	{
+		player = makeEntity();
+		player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]));
+		auto s = player->addComponent<ShapeComponent>();
+		s->setShape<sf::RectangleShape>(Vector2f(10.f, 10.f));
+		s->getShape().setFillColor(Color::Magenta);
+		s->getShape().setOrigin(5.f, 5.f);
+		player->addComponent<PlayerMovementComponent>();
+		ents.list.push_back(player);
+		//player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
 	}
 
-	player = make_shared<Entity>();
+	// Add physics colliders to level tiles.
+	{
+		auto walls = ls::findTiles(ls::WALL);
+		auto blocks = ls::findTiles(ls::BREAKABLE);
 
-	auto s = player->addComponent<ShapeComponent>();
-	s->setShape<sf::CircleShape>(12.f);
-	s->getShape().setFillColor(Color::Red);
-	s->getShape().setOrigin({ 12.f, 12.f });
+		for (auto w : walls) {
+			auto pos = ls::getTilePosition(w);
+			pos += Vector2f(20.f, 20.f); //offset to center
+			auto e = makeEntity();
+			e->setPosition(pos);
+		    //e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+		}
 
-	player->addComponent<PlayerMovementComponent>();
-	_ents.list.push_back(player);
+		for (auto w : blocks) {
+			auto pos = ls::getTilePosition(w);
+			pos += Vector2f(20.f, 20.f); //offset to center
+			auto e = makeEntity();
+			auto s = e->addComponent<ShapeComponent>();
+			
+			e->setPosition(pos);
+		   // e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+			
+			s->setShape<sf::RectangleShape>(Vector2f(40.f, 40.f));
+			s->getShape().setFillColor(Color::Green);
+			s->getShape().setOrigin({ 20.f, 20.f });
+
+			BlockManager::addBreakableBlocks(pos);
+			e->addComponent<TileComponent>();
+			//_ents.list.push_back(breakableBlock);
+			breakableBlocks.push_back(e);
+
+		}
+	}
 
 	respawn();
 
@@ -87,11 +96,11 @@ void GameScene::load() {
 
 }
 
-void GameScene::update(float dt) {
-	// Return to main menu
+void GameScene::Update(const double& dt) {
+	/*// Return to main menu
 	if (Keyboard::isKeyPressed(Keyboard::Tab)) {
 		activeScene = menuScene;
-	}
+	}*/
 
 	//// Reset game when ghost hists pacman
 	//for (auto& g : ghosts) {
@@ -99,37 +108,30 @@ void GameScene::update(float dt) {
 	//		respawn();
 	//	}
 	//}
-
 	int i = 0;
  	if (Keyboard::isKeyPressed(Keyboard::Z))
 	{
  		for (auto& block : breakableBlocks)
 		{
-			cout << "Block " << block->getPosition() << endl;
-			cout << "Player " << player->getPosition() << endl;
-			cout << "Distance " << length(block->getPosition() - player->getPosition()) << endl;
-
- 			if ( length(block->getPosition() + temp  - (player->getPosition() + 
-				player->GetCompatibleComponent<PlayerMovementComponent>()[0]->getMiningDirection())) < 30.f)
+ 			if (length(block->getPosition() - player->getPosition()) < 25.f)
 			{
 				block->get_components<TileComponent>()[0]->hitHandler();
 
 				if (block->get_components<TileComponent>()[0]->getHealth() == 0)
 				{
-					BlockManager::EraseBlock(block->getPosition());
-					breakableBlocks.erase(breakableBlocks.begin()+i);
 					block->setForDelete();
+					BlockManager::EraseBlock(block->getPosition());					
 				}
 			}
 			i++;
 		}
 	}
-	Scene::update(dt);
+	Scene::Update(dt);
 }
 
-void GameScene::render() {
-	ls::render(Renderer::getWindow()); // REMEMBER THIS
-	Scene::render();
+void GameScene::Render() {
+	ls::render(Engine::GetWindow()); // REMEMBER THIS
+	Scene::Render();
 }
 
 void GameScene::respawn() {
@@ -140,7 +142,7 @@ void GameScene::respawn() {
 		i++;
 	}*/
 
-	player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]) + temp);
+	player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]));
 	player->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(150.f);
 
 	//auto ghost_spawns = ls::findTiles(ls::ENEMY);
@@ -149,5 +151,7 @@ void GameScene::respawn() {
 	//	g->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(100.f);
 	//}
 }
+
+void GameScene::UnLoad(){}
 
 

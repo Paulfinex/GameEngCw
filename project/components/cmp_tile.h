@@ -6,7 +6,7 @@ protected:
 	int _health = 2;
 public:
 	void render() override {}
-	void update(float dt) override;
+	void update(double dt) override;
 	explicit TileComponent(Entity* p);
 	TileComponent() = delete;
 	void hitHandler();

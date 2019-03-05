@@ -7,7 +7,7 @@ using namespace std;
 PlayerMovementComponent::PlayerMovementComponent(Entity* p)
 	: ActorMovementComponent(p) {}
 
-void PlayerMovementComponent::update(float dt) {
+void PlayerMovementComponent::update(double dt) {
 
 	// Movement
 	sf::Vector2f displacement = { 0.0f, 0.0f };

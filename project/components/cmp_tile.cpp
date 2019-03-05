@@ -2,7 +2,7 @@
 
 int _health = 2;
 
-void TileComponent::update(float dt)
+void TileComponent::update(double dt)
 {
 
 }
