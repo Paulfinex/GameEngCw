@@ -1,10 +1,12 @@
 #include "cmp_tile.h"
+#include "engine.h"
 
 void TileComponent::update(double dt)
 {
     if(_health <= 0)
 	{
 		_parent->setForDelete();
+
 	}
 }
 

@@ -10,12 +10,12 @@
 #include <map>
 #include "system_renderer.h"
 #include "engine.h"
-
+#include "components/cmp_ghost.h"
 using namespace std;
 using namespace sf;
 
 shared_ptr<Entity> player;
-vector<shared_ptr<Entity>> ghosts;
+shared_ptr<Entity> ghost;
 
 void GameScene::Load() {
 
@@ -38,6 +38,29 @@ void GameScene::Load() {
 		p->getBody()->SetFixedRotation(true);
 		ents.list.push_back(player);
 	}
+	//Create Ghost
+	{
+		ghost = makeEntity();
+		ghost->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]));
+		ghost->addTag("ghost");
+		auto s = ghost->addComponent<ShapeComponent>();
+		s->setShape<sf::CircleShape>(10.f);
+		s->getShape().setFillColor(Color::Yellow);
+		s->getShape().setOrigin(5.f, 5.f);
+		auto g = ghost->addComponent<PhysicsComponent>(true, Vector2f(s->getShape().getLocalBounds().width, s->getShape().getLocalBounds().height));
+		g->getBody()->SetSleepingAllowed(false);
+		g->getBody()->SetFixedRotation(true);
+		ghost->addComponent<EnemyAIComponent>();
+		ents.list.push_back(ghost);
+
+
+
+
+
+
+	}
+
+
 
 	// Add physics colliders to level tiles.
 	{

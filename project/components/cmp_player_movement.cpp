@@ -42,11 +42,11 @@ void PlayerMovementComponent::update(double dt) {
 			_facing = RIGHT;
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Up)) {
-			direction.y--;
+			direction.y++;
 			_facing = UP;
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Down)) {
-			direction.y++;
+			direction.y--;
 			_facing = DOWN;
 		}
 	}
