@@ -1,10 +1,11 @@
 #include "cmp_tile.h"
 
-int _health = 2;
-
 void TileComponent::update(double dt)
 {
-
+    if(_health <= 0)
+	{
+		_parent->setForDelete();
+	}
 }
 
 TileComponent::TileComponent(Entity * p) :Component(p)
@@ -13,11 +14,7 @@ TileComponent::TileComponent(Entity * p) :Component(p)
 
 void TileComponent::hitHandler()
 {
-
-	if (_health > 0)
-	{
-		_health--;
-	}
+	_health--;
 }
 
 int TileComponent::getHealth()

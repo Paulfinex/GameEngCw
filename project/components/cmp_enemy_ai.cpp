@@ -7,12 +7,12 @@ using namespace std;
 static const Vector2i directions[] = { { 1, 0 },{ 0, 1 },{ 0, -1 },{ -1, 0 } };
 
 EnemyAIComponent::EnemyAIComponent(Entity* p)
-	: _direction(directions[(rand() % 4)]), _state(ROAMING), ActorMovementComponent(p) {}
+	: _direction(directions[(rand() % 4)]), _state(ROAMING), Component(p) {}
 
 void EnemyAIComponent::update(double dt) {
 
 	// Amount to move
-	const auto mva = (float)(dt * _speed);
+	const auto mva = (float)(dt);
 	// Current position
 	const Vector2f pos = _parent->getPosition();
 	// Next position
@@ -61,7 +61,5 @@ void EnemyAIComponent::update(double dt) {
 	default:
 		break;
 	}
-
-	ActorMovementComponent::update(dt);
 
 }

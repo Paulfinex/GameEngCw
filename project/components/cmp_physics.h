@@ -27,5 +27,6 @@ public:
 	void dampen(const sf::Vector2f& s);
 	void setVelocity(const sf::Vector2f& v);
 	void teleport(const sf::Vector2f& v);
+	b2Body* const PhysicsComponent::getBody() const;
 	~PhysicsComponent() override;
 };

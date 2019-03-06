@@ -17,7 +17,6 @@ public:
 	virtual void Render();
 	bool isLoaded() const;
 	std::shared_ptr<Entity> makeEntity();
-
 	EntityManager ents;
 
 protected:
@@ -37,6 +36,7 @@ public:
 	static sf::RenderWindow& GetWindow();
 	static sf::Vector2u getWindowSize();
 	static void setVsync(bool b);
+	static Scene* GetActiveScene();
 
 private:
 	static Scene* _activeScene;
