@@ -1,9 +1,8 @@
 #pragma once
 
 #include <ecm.h>
-#include "cmp_actor_movement.h"
 
-class EnemyAIComponent : public ActorMovementComponent {
+class EnemyAIComponent : public Component {
 protected:
 	sf::Vector2f _direction;
 	enum state { DEADEND, ROAMING, ROTATING, ROTATED };
@@ -12,5 +11,5 @@ public:
 	explicit EnemyAIComponent(Entity* p);
 	EnemyAIComponent() = delete;
 	void render() override {}
-	void update(float dt) override;
+	void update(double dt) override;
 };
