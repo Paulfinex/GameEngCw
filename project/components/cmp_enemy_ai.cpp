@@ -22,11 +22,6 @@ void EnemyAIComponent::update(double dt) {
 	auto speed = _groundspeed;
 
 	auto getP = Engine::GetActiveScene()->ents.find("player");
-	float angle = atan2(getP[0]->getPosition().y - _parent->getPosition().y, getP[0]->getPosition().x - _parent->getPosition().x);
-
-	sf::Vector2f direction = getP[0]->getPosition() ;
-
-
-
-	_parent->get_components<PhysicsComponent>()[0]->setVelocity(Vector2f(normalize(direction * angle) * speed));
+	Vector2f direction = { (getP[0]->getPosition().x - _parent->getPosition().x),( _parent->getPosition().y- getP[0]->getPosition().y) };
+	_parent->get_components<PhysicsComponent>()[0]->setVelocity(Vector2f(normalize(direction ) * speed));
 }
