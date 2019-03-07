@@ -11,6 +11,8 @@
 #include "system_renderer.h"
 #include "engine.h"
 #include "components/cmp_ghost.h"
+#include "components/cmp_pathfind.h"
+#include "pathfinder.h"
 using namespace std;
 using namespace sf;
 

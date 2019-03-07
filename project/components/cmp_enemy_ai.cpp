@@ -33,42 +33,48 @@ void EnemyAIComponent::update(double dt) {
 	}
 	else
 	{
-		auto touching = _parent->get_components<PhysicsComponent>()[0]->getTouching();
-
-		if (touching.size() > 0)
-		{
-
-			for (auto &t : touching)
-			{
-				auto blocks = Engine::GetActiveScene()->ents.find("wall");
-				for (auto &b : blocks)
-					if (t->GetFixtureA() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture() ||
-						t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
-					{
-						random1 = ((double)rand() / (RAND_MAX)) * 2 - 1;
-						random2 = ((double)rand() / (RAND_MAX)) * 2 - 1;
-					}
-				auto breakables = Engine::GetActiveScene()->ents.find("breakable");
-				for (auto &b : breakables)
-					if (t->GetFixtureA() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture() ||
-						t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
-					{
-						random1 = ((double)rand() / (RAND_MAX)) * 2 - 1;
-						random2 = ((double)rand() / (RAND_MAX)) * 2 - 1;
-					}
-				auto player = Engine::GetActiveScene()->ents.find("player");
-				for (auto &p : player)
-					if (t->GetFixtureA() == p->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture() ||
-						t->GetFixtureB() == p->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
-					{
-						//Player hit
-					}
-
-			}
-		}
-		Vector2f direction = { random1,random2 };
+		Vector2f direction = { 0.f,0.f };
 		_parent->get_components<PhysicsComponent>()[0]->setVelocity(Vector2f(normalize(direction) * speed));
 	}
+		
+		
+		//{
+	//	auto touching = _parent->get_components<PhysicsComponent>()[0]->getTouching();
+
+	//	if (touching.size() > 0)
+	//	{
+
+	//		for (auto &t : touching)
+	//		{
+	//			auto blocks = Engine::GetActiveScene()->ents.find("wall");
+	//			for (auto &b : blocks)
+	//				if (t->GetFixtureA() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture() ||
+	//					t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
+	//				{
+	//				//	random1 = ((double)rand() / (RAND_MAX)) * 2 - 1;
+	//				//	random2 = ((double)rand() / (RAND_MAX)) * 2 - 1;
+	//				}
+	//			auto breakables = Engine::GetActiveScene()->ents.find("breakable");
+	//			for (auto &b : breakables)
+	//				if (t->GetFixtureA() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture() ||
+	//					t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
+	//				{
+	//				//	random1 = ((double)rand() / (RAND_MAX)) * 2 - 1;
+	//				//	random2 = ((double)rand() / (RAND_MAX)) * 2 - 1;
+	//				}
+	//			auto player = Engine::GetActiveScene()->ents.find("player");
+	//			for (auto &p : player)
+	//				if (t->GetFixtureA() == p->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture() ||
+	//					t->GetFixtureB() == p->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
+	//				{
+	//					//Player hit
+	//				}
+
+	//		}
+	//	}
+	//	Vector2f direction = { random1,random2 };
+		//_parent->get_components<PhysicsComponent>()[0]->setVelocity(Vector2f(normalize(direction) * speed));
+	//}
 //	random_device dev;
 //	default_random_engine engine(dev());
 
