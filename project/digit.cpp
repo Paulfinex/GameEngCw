@@ -110,24 +110,18 @@ void GameScene::Load() {
 }
 
 void GameScene::Update(const double& dt) {
-		static bool mouse_down = false;
-		if (Mouse::isButtonPressed(Mouse::Left) && !mouse_down) {
-			auto mouse_pos = Mouse::getPosition(Engine::GetWindow());
-			mouse_down = true;
-			if (ls::isOnGrid(Vector2f(mouse_pos))) {
-				auto relative_pos = mouse_pos - Vector2i(ls::getOffset());
-				auto tile_coord = relative_pos / (int)ls::getTileSize();
-				if (ls::getTile(Vector2ul(tile_coord)) != ls::WALL) {
-					auto char_relative = ghost->getPosition() - ls::getOffset();
-					auto char_tile = Vector2i(char_relative / ls::getTileSize());
-					auto path = pathFind(char_tile, tile_coord);
-					ai->setPath(path);
-				}
-			}
-		}
-		if (mouse_down && !Mouse::isButtonPressed(Mouse::Left)) {
-			mouse_down = false;
-		}
+
+	auto g = ghost;
+
+	if (g->GetCompatibleComponent<EnemyAIComponent>()[0]->_state == EnemyAIComponent::CHASING)
+	{
+		auto char_relative = ghost->getPosition() - ls::getOffset();
+		auto char_tile = Vector2i(char_relative / ls::getTileSize());
+		auto player_relative = player->getPosition() - ls::getOffset();
+		auto player_tile = Vector2i(player_relative / ls::getTileSize());
+		auto path = pathFind(char_tile, player_tile);
+		ai->setPath(path);
+	}
 		Scene::Update(dt);
 }
 

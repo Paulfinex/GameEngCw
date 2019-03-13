@@ -99,4 +99,8 @@ void EnemyAIComponent::ChasePlayer(std::vector<std::shared_ptr<Entity>> &getP, f
 	_parent->get_components<PhysicsComponent>()[0]->setVelocity(Vector2f(normalize(direction) * speed));
 }
 
+char EnemyAIComponent::getState()
+{
+	return state();
+}
 
