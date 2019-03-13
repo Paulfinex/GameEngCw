@@ -12,6 +12,7 @@ public:
 	enum facing { LEFT, RIGHT, UP, DOWN };
 	facing _facing;
 	bool _canMove;
+	float miningColdDown;
 	float _groundspeed;
 	sf::Vector2f miningDirection;
 	sf::Vector2f getMiningDirection();

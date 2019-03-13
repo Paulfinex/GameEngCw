@@ -5,7 +5,7 @@
 using namespace std;
 
 
-void SpriteComponent::setTexure(std::shared_ptr<sf::Texture> tex)
+void SpriteComponent::setTexture(std::shared_ptr<sf::Texture> tex)
 {
 	_texture = tex;
 	_sprite->setTexture(*_texture);

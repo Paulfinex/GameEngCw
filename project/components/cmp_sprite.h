@@ -18,7 +18,11 @@ public:
 	sf::Sprite& getSprite() const;
 
 
-	void setTexure(std::shared_ptr<sf::Texture> tex);
+	void setTexture(std::shared_ptr<sf::Texture> tex);
+
+	template <typename... Targs> void setSprite(Targs... params) {
+		_sprite.reset(new sf::Sprite(params...));
+	}
 };
 
 class ShapeComponent : public Component {

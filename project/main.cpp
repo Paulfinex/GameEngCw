@@ -7,7 +7,6 @@
 using namespace sf;
 using namespace std;
 
-// Does this goes here?
 GameScene gameScene;
 
 int main() {
