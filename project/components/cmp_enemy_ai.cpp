@@ -33,65 +33,65 @@ void EnemyAIComponent::update(double dt) {
 
 		ChasePlayer(getP, speed);
 
-		_parent->get_components<SpriteComponent>()[0]->getSprite().setTextureRect(sf::IntRect((32 * 6) + 5, 0, 32, 32));
-		_parent->get_components<SpriteComponent>()[0]->getSprite().setOrigin(_parent->get_components<SpriteComponent>()[0]->getSprite().getLocalBounds().width / 2,
-			_parent->get_components<SpriteComponent>()[0]->getSprite().getLocalBounds().height / 2);
+		auto s = _parent->GetCompatibleComponent<SpriteComponent>()[0];
 
+		if (gTopDistance > 40)
+		{
+			s->getSprite().setTextureRect(sf::IntRect((32 * 6) + 5, 0, 32, 32));
+		}
+		else
+		{
+			s->getSprite().setTextureRect(sf::IntRect((32 * 8) + 5, 0, 32, 32));
+		}
 	}
 	else
 	{
 		_state = DORMANT;
 		Vector2f direction = { 0.f,0.f };
-		_parent->get_components<PhysicsComponent>()[0]->setVelocity(Vector2f(normalize(direction) * speed));
-
-		_parent->get_components<SpriteComponent>()[0]->getSprite().setTextureRect(sf::IntRect((32 * 5) + 5, 0, 32, 32));
-		_parent->get_components<SpriteComponent>()[0]->getSprite().setOrigin(_parent->get_components<SpriteComponent>()[0]->getSprite().getLocalBounds().width / 2,
-			_parent->get_components<SpriteComponent>()[0]->getSprite().getLocalBounds().height / 2);
+		_parent->GetCompatibleComponent<PhysicsComponent>()[0]->setVelocity(Vector2f(normalize(direction) * speed));
+		_parent->GetCompatibleComponent<SpriteComponent>()[0]->getSprite().setTextureRect(sf::IntRect((32 * 5) + 5, 0, 32, 32));
+		_parent->GetCompatibleComponent<SpriteComponent>()[0]->getSprite().setOrigin(_parent->GetCompatibleComponent<SpriteComponent>()[0]->getSprite().getLocalBounds().width / 2,
+			_parent->GetCompatibleComponent<SpriteComponent>()[0]->getSprite().getLocalBounds().height / 2);
 	}
 
-	//{
-//	auto touching = _parent->get_components<PhysicsComponent>()[0]->getTouching();
-
-//	if (touching.size() > 0)
-//	{
-
-//		for (auto &t : touching)
-//		{
-//			auto blocks = Engine::GetActiveScene()->ents.find("wall");
-//			for (auto &b : blocks)
-//				if (t->GetFixtureA() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture() ||
-//					t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
-//				{
-//				//	random1 = ((double)rand() / (RAND_MAX)) * 2 - 1;
-//				//	random2 = ((double)rand() / (RAND_MAX)) * 2 - 1;
-//				}
-//			auto breakables = Engine::GetActiveScene()->ents.find("breakable");
-//			for (auto &b : breakables)
-//				if (t->GetFixtureA() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture() ||
-//					t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
-//				{
-//				//	random1 = ((double)rand() / (RAND_MAX)) * 2 - 1;
-//				//	random2 = ((double)rand() / (RAND_MAX)) * 2 - 1;
-//				}
-//			auto player = Engine::GetActiveScene()->ents.find("player");
-//			for (auto &p : player)
-//				if (t->GetFixtureA() == p->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture() ||
-//					t->GetFixtureB() == p->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
-//				{
-//					//Player hit
-//				}
-
-//		}
-//	}
-//	Vector2f direction = { random1,random2 };
-	//_parent->get_components<PhysicsComponent>()[0]->setVelocity(Vector2f(normalize(direction) * speed));
-//}
-//	random_device dev;
-//	default_random_engine engine(dev());
+	/*if (_state == CHASING)
+	{
+		auto touching = _parent->get_components<PhysicsComponent>()[0]->getTouching();
 
 
+		if (touching.size() > 0)
+		{
+				
+				/*auto blocks = Engine::GetActiveScene()->ents.find("wall");
+				for (auto &b : blocks)
+				{
 
+					if (t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
+					{
+						random1 = ((double)rand() / (RAND_MAX)) * 2 - 1;
+						random2 = ((double)rand() / (RAND_MAX)) * 2 - 1;
+					}
+				}
+				auto breakables = Engine::GetActiveScene()->ents.find("breakable");
+				for (auto &b : breakables)
+				{
+					if (t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
+					{
+						random1 = ((double)rand() / (RAND_MAX)) * 2 - 1;
+						random2 = ((double)rand() / (RAND_MAX)) * 2 - 1;
+					}
+				}	
+			}
+		}
+		/*Vector2f direction = { random1,random2 };
+		_parent->get_components<PhysicsComponent>()[0]->setVelocity(Vector2f(normalize(direction) * speed));
+
+		random_device dev;
+		default_random_engine engine(dev());
+	}*/
 }
+
+
 
 void EnemyAIComponent::ChasePlayer(std::vector<std::shared_ptr<Entity>> &getP, float speed)
 {

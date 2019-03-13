@@ -10,11 +10,14 @@
 using namespace sf;
 using namespace std;
 
+double digCD;
+
 PlayerMovementComponent::PlayerMovementComponent(Entity* p)
 	: Component(p) 
 {
 	_groundspeed = 160.f;
 	miningDirection = { 1.0f, 0.0f };
+	digCD = 0;
 }
 
 void PlayerMovementComponent::update(double dt) {
@@ -63,8 +66,31 @@ void PlayerMovementComponent::update(double dt) {
 
 	if (Keyboard::isKeyPressed(Keyboard::Z) || Joystick::isButtonPressed(0, 0))
 	{
-		DigIT();
+		if (digCD <= 0)
+		{
+			DigIT();
+		}
+		digCD -= dt;
 	}
+
+	auto touching = _parent->get_components<PhysicsComponent>()[0]->getTouching();
+
+	if (touching.size() > 0)
+	{
+		for (auto &t : touching)
+		{
+			auto ghosts = Engine::GetActiveScene()->ents.find("ghost");
+			if (_parent->isAlive())
+			{
+				for (auto &b : ghosts)
+					if (t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
+					{
+						//_parent->setForDelete();  //cause an error do not know why. It does not matter though cause we need a game over scene load.
+					}
+			}
+		}
+	}
+
 }
 
 sf::Vector2f PlayerMovementComponent::getMiningDirection()
@@ -86,11 +112,13 @@ void PlayerMovementComponent::DigIT()
 		for (auto &t : touching)
 		{
 			auto blocksToDamage = Engine::GetActiveScene()->ents.find("breakable");
+
 			for(auto &b : blocksToDamage)
-			if (t->GetFixtureA() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture() ||
-				t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
+			if (t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())			
 			{
 				b->GetCompatibleComponent<TileComponent>()[0]->hitHandler();
+				digCD = 0.3;
+				break;
 			}
 		}
 	}
