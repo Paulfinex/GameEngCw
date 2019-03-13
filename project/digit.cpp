@@ -7,12 +7,15 @@
 #include "levelsystem.h"
 #include "components//cmp_physics.h"
 #include "components/cmp_tile.h"
+#include "components/cmp_sprite.h"
 #include <map>
 #include "system_renderer.h"
 #include "engine.h"
 #include "components/cmp_ghost.h"
 #include "components/cmp_pathfind.h"
 #include "pathfinder.h"
+#include "system_resources.h"
+
 using namespace std;
 using namespace sf;
 
@@ -21,8 +24,8 @@ shared_ptr<Entity> ghost;
 
 void GameScene::Load() {
 
-	ls::loadLevelFile("res/maps/map1.txt", 40.f);
-	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
+	ls::loadLevelFile("res/maps/map1.txt", 40);
+	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40);
 	ls::setOffset(Vector2f(0, ho));
 
 	// Create Player
@@ -30,12 +33,13 @@ void GameScene::Load() {
 		player = makeEntity();
 		player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]));
 		player->addTag("player");
-		auto s = player->addComponent<ShapeComponent>();
-		s->setShape<sf::RectangleShape>(Vector2f(10.f, 10.f));
-		s->getShape().setFillColor(Color::Magenta);
-		s->getShape().setOrigin(5.f, 5.f);
+		auto s = player->addComponent<SpriteComponent>();
+		auto tex = Resources::get<Texture>("tex.png");
+		s->setTexture(tex);
+		s->getSprite().setTextureRect(sf::IntRect(32, 0, 32, 32));
+		s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
 		player->addComponent<PlayerMovementComponent>();
-		auto p = player->addComponent<PhysicsComponent>(true, Vector2f(s->getShape().getLocalBounds().width, s->getShape().getLocalBounds().height));
+		auto p = player->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width, s->getSprite().getLocalBounds().height));
 		p->getBody()->SetSleepingAllowed(false);
 		p->getBody()->SetFixedRotation(true);
 		ents.list.push_back(player);
@@ -45,25 +49,18 @@ void GameScene::Load() {
 		ghost = makeEntity();
 		ghost->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]));
 		ghost->addTag("ghost");
-		auto s = ghost->addComponent<ShapeComponent>();
-		s->setShape<sf::CircleShape>(10.f);
-		s->getShape().setFillColor(Color::Yellow);
-		s->getShape().setOrigin(5.f, 5.f);
-		auto g = ghost->addComponent<PhysicsComponent>(true, Vector2f(s->getShape().getLocalBounds().width, s->getShape().getLocalBounds().height));
+		auto s = ghost->addComponent<SpriteComponent>();
+		auto tex = Resources::get<Texture>("tex.png");
+		s->setTexture(tex);
+		s->getSprite().setTextureRect(sf::IntRect(165, 0, 32, 32));
+		s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
+		auto g = ghost->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width, 
+			s->getSprite().getLocalBounds().height));
 		g->getBody()->SetSleepingAllowed(false);
 		g->getBody()->SetFixedRotation(true);
 		ghost->addComponent<EnemyAIComponent>();
 		ents.list.push_back(ghost);
-
-
-
-
-
-
 	}
-
-
-
 	// Add physics colliders to level tiles.
 	{
 		auto walls = ls::findTiles(ls::WALL);
@@ -74,21 +71,28 @@ void GameScene::Load() {
 			e->addTag("wall");
 			e->setPosition(ls::getTilePosition(w) + Vector2f(ls::getTileSize() / 2, ls::getTileSize() / 2));
 		    e->addComponent<PhysicsComponent>(false, Vector2f(ls::getTileSize(), ls::getTileSize()));
+
+			auto s = e->addComponent<SpriteComponent>();
+			auto tex = Resources::get<Texture>("tex.png");
+			s->setTexture(tex);
+			s->getSprite().setTextureRect(sf::IntRect(32*9+5, 0, 32, 32));
+			s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
+
 			ents.list.push_back(e);
 		}
 
 		for (auto w : blocks) 
 		{		
 			auto e = makeEntity();
-			e->addTag("breakable");
-			auto s = e->addComponent<ShapeComponent>();
-			
+			e->addTag("breakable");			
 			e->setPosition(ls::getTilePosition(w) + Vector2f(ls::getTileSize() / 2, ls::getTileSize() / 2));
 			e->addComponent<PhysicsComponent>(false, Vector2f(ls::getTileSize(), ls::getTileSize()));
 			
-			s->setShape<sf::RectangleShape>(Vector2f(40.f, 40.f));
-			s->getShape().setFillColor(Color::Green);
-			s->getShape().setOrigin(Vector2f(ls::getTileSize() / 2, ls::getTileSize() / 2));
+			auto s = e->addComponent<SpriteComponent>();
+			auto tex = Resources::get<Texture>("tex.png");
+			s->setTexture(tex);
+			s->getSprite().setTextureRect(sf::IntRect(0, 32, 32, 32));
+			s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
 			e->addComponent<TileComponent>();
 			ents.list.push_back(e);
 		}
