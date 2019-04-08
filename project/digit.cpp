@@ -21,6 +21,7 @@ using namespace sf;
 
 shared_ptr<Entity> player;
 shared_ptr<Entity> ghost;
+shared_ptr<PathfindingComponent> ai;
 
 void GameScene::Load() {
 
@@ -61,6 +62,15 @@ void GameScene::Load() {
 		ghost->addComponent<EnemyAIComponent>();
 		ents.list.push_back(ghost);
 	}
+
+	// Add PathFinding
+		// New code from here
+	{
+		auto path = pathFind(sf::Vector2i(1, 1), sf::Vector2i(ls::getWidth() - 2, ls::getHeight() - 2));
+		ai = ghost->addComponent<PathfindingComponent>();
+		ai->setPath(path);
+	}
+
 	// Add physics colliders to level tiles.
 	{
 		auto walls = ls::findTiles(ls::WALL);
@@ -100,7 +110,19 @@ void GameScene::Load() {
 }
 
 void GameScene::Update(const double& dt) {
-	Scene::Update(dt);
+
+	auto g = ghost;
+
+	if (g->GetCompatibleComponent<EnemyAIComponent>()[0]->_state == EnemyAIComponent::CHASING)
+	{
+		auto char_relative = ghost->getPosition() - ls::getOffset();
+		auto char_tile = Vector2i(char_relative / ls::getTileSize());
+		auto player_relative = player->getPosition() - ls::getOffset();
+		auto player_tile = Vector2i(player_relative / ls::getTileSize());
+		auto path = pathFind(char_tile, player_tile);
+		ai->setPath(path);
+	}
+		Scene::Update(dt);
 }
 
 void GameScene::Render() {
