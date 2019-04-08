@@ -15,4 +15,5 @@ public:
 	enum facing { LEFT, RIGHT, UP, DOWN };
 	facing _facing;
 	float _groundspeed = 100;
+	char getState();
 };
