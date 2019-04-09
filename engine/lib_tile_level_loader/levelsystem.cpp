@@ -25,8 +25,8 @@ size_t LevelSystem::_width;
 size_t LevelSystem::_height;
 
 float LevelSystem::_tileSize(100.f);
-Vector2f LevelSystem::_offset(0.0f, 30.0f);
-// Vector2f LevelSystem::_offset(0,0);
+
+Vector2f LevelSystem::_offset(0,0);
 vector<std::unique_ptr<sf::RectangleShape>> LevelSystem::_sprites;
 
 void LevelSystem::loadLevelFile(const std::string& path, float tileSize) {

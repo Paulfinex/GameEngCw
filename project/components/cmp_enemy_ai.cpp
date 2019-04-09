@@ -27,11 +27,11 @@ void EnemyAIComponent::update(double dt) {
 
 	float gTopDistance = length(_parent->getPosition() - getP[0]->getPosition());
 
-	if (gTopDistance < 150)
+	if (gTopDistance < 300.f)
 	{
 		_state = CHASING;
 
-		ChasePlayer(getP, speed);
+		//ChasePlayer(getP, speed);
 
 		auto s = _parent->GetCompatibleComponent<SpriteComponent>()[0];
 

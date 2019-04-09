@@ -4,6 +4,7 @@
 class TileComponent : public Component {
 protected:
 	int _health = 1;
+	double delayDeath = 0.5;
 public:
 	void render() override {}
 	void update(double dt) override;

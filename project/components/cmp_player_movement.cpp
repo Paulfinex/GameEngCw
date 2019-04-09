@@ -85,7 +85,7 @@ void PlayerMovementComponent::update(double dt) {
 				for (auto &b : ghosts)
 					if (t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
 					{
-						//_parent->setForDelete();  //cause an error do not know why. It does not matter though cause we need a game over scene load.
+						//_parent->setForDelete();  
 					}
 			}
 		}
@@ -117,7 +117,7 @@ void PlayerMovementComponent::DigIT()
 			if (t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())			
 			{
 				b->GetCompatibleComponent<TileComponent>()[0]->hitHandler();
-				digCD = 0.3;
+				digCD = 0.5;
 				break;
 			}
 		}

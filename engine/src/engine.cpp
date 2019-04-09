@@ -84,7 +84,7 @@ void Engine::Render(RenderWindow& window) {
 
 void Engine::Start(unsigned int width, unsigned int height,
 	const std::string& gameName, Scene* scn) {
-	RenderWindow window(VideoMode(width, height), gameName);
+	RenderWindow window(VideoMode(width, height), gameName, Style::Fullscreen | Style::Titlebar | Style::Close);
 	_gameName = gameName;
 	_window = &window;
 	Renderer::initialise(window);

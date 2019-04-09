@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <engine.h>
 
-class GameScene : public Scene {
+class SinglePlayerScene : public Scene {
 private:
 	sf::Text text;
 	sf::Clock scoreClock;

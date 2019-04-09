@@ -1,4 +1,4 @@
-#include "digit.h"
+#include "single_player_scene.h"
 #include "levelsystem.h"
 #include "components/cmp_sprite.h"
 #include "components/cmp_player_movement.h"
@@ -6,6 +6,7 @@
 #include "components/cmp_physics.h"
 #include "levelsystem.h"
 #include "components//cmp_physics.h"
+#include "ecm.h"
 #include "components/cmp_tile.h"
 #include "components/cmp_sprite.h"
 #include <map>
@@ -23,10 +24,10 @@ shared_ptr<Entity> player;
 shared_ptr<Entity> ghost;
 shared_ptr<PathfindingComponent> ai;
 
-void GameScene::Load() {
+void SinglePlayerScene::Load() {
 
-	ls::loadLevelFile("res/maps/map1.txt", 40);
-	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40);
+	ls::loadLevelFile("res/maps/map1.txt", 60);
+	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 60);
 	ls::setOffset(Vector2f(0, ho));
 
 	// Create Player
@@ -37,7 +38,8 @@ void GameScene::Load() {
 		auto s = player->addComponent<SpriteComponent>();
 		auto tex = Resources::get<Texture>("tex.png");
 		s->setTexture(tex);
-		s->getSprite().setTextureRect(sf::IntRect(32, 0, 32, 32));
+		s->getSprite().setTextureRect(sf::IntRect(35, 0, 32, 32));
+		s->getSprite().setScale(1.5f, 1.5f);
 		s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
 		player->addComponent<PlayerMovementComponent>();
 		auto p = player->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width, s->getSprite().getLocalBounds().height));
@@ -54,8 +56,9 @@ void GameScene::Load() {
 		auto tex = Resources::get<Texture>("tex.png");
 		s->setTexture(tex);
 		s->getSprite().setTextureRect(sf::IntRect(165, 0, 32, 32));
+		s->getSprite().setScale(1.5f, 1.5f);
 		s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
-		auto g = ghost->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width, 
+		auto g = ghost->addComponent<PhysicsComponent>(false, Vector2f(s->getSprite().getLocalBounds().width, 
 			s->getSprite().getLocalBounds().height));
 		g->getBody()->SetSleepingAllowed(false);
 		g->getBody()->SetFixedRotation(true);
@@ -64,7 +67,6 @@ void GameScene::Load() {
 	}
 
 	// Add PathFinding
-		// New code from here
 	{
 		auto path = pathFind(sf::Vector2i(1, 1), sf::Vector2i(ls::getWidth() - 2, ls::getHeight() - 2));
 		ai = ghost->addComponent<PathfindingComponent>();
@@ -86,6 +88,7 @@ void GameScene::Load() {
 			auto tex = Resources::get<Texture>("tex.png");
 			s->setTexture(tex);
 			s->getSprite().setTextureRect(sf::IntRect(32*9+5, 0, 32, 32));
+			s->getSprite().setScale(1.875f, 1.875f);
 			s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
 
 			ents.list.push_back(e);
@@ -102,6 +105,7 @@ void GameScene::Load() {
 			auto tex = Resources::get<Texture>("tex.png");
 			s->setTexture(tex);
 			s->getSprite().setTextureRect(sf::IntRect(0, 32, 32, 32));
+			s->getSprite().setScale(1.875f, 1.875f);
 			s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
 			e->addComponent<TileComponent>();
 			ents.list.push_back(e);
@@ -109,14 +113,14 @@ void GameScene::Load() {
 	}
 }
 
-void GameScene::Update(const double& dt) {
+void SinglePlayerScene::Update(const double& dt) {
 
 	auto g = ghost;
 
 	if (g->GetCompatibleComponent<EnemyAIComponent>()[0]->_state == EnemyAIComponent::CHASING)
 	{
-		auto char_relative = ghost->getPosition() - ls::getOffset();
-		auto char_tile = Vector2i(char_relative / ls::getTileSize());
+		auto char_relative = (Vector2i)ghost->getPosition() - Vector2i(ls::getOffset());
+		auto char_tile = Vector2i(char_relative / (int)ls::getTileSize());
 		auto player_relative = player->getPosition() - ls::getOffset();
 		auto player_tile = Vector2i(player_relative / ls::getTileSize());
 		auto path = pathFind(char_tile, player_tile);
@@ -125,13 +129,13 @@ void GameScene::Update(const double& dt) {
 		Scene::Update(dt);
 }
 
-void GameScene::Render() {
+void SinglePlayerScene::Render() {
 	ls::render(Engine::GetWindow()); // REMEMBER THIS
 	Scene::Render();
 }
 
-void GameScene::respawn() {}
+void SinglePlayerScene::respawn() {}
 
-void GameScene::UnLoad(){}
+void SinglePlayerScene::UnLoad(){}
 
 

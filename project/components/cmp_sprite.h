@@ -3,6 +3,7 @@
 #include "ecm.h"
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 class SpriteComponent : public Component {
 protected:
