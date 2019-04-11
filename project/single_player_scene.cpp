@@ -16,115 +16,48 @@
 #include "components/cmp_pathfind.h"
 #include "pathfinder.h"
 #include "system_resources.h"
+#include "preabs_manager.h"
 
 using namespace std;
 using namespace sf;
 
-shared_ptr<Entity> player;
-shared_ptr<Entity> ghost;
-shared_ptr<PathfindingComponent> ai;
 
 void SinglePlayerScene::Load() {
 
 	ls::loadLevelFile("res/maps/map1.txt", 60);
-	auto ho = Engine::getWindowSize().y - (ls::getHeight() * 60);
-	ls::setOffset(Vector2f(0, ho));
+	//auto ho = Engine::getWindowSize().y - (ls::getHeight() * 60);
+	//ls::setOffset(Vector2f(0, ho));
 
 	// Create Player
-	{
-		player = makeEntity();
-		player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]));
-		player->addTag("player");
-		auto s = player->addComponent<SpriteComponent>();
-		auto tex = Resources::get<Texture>("tex.png");
-		s->setTexture(tex);
-		s->getSprite().setTextureRect(sf::IntRect(35, 0, 32, 32));
-		s->getSprite().setScale(1.5f, 1.5f);
-		s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
-		player->addComponent<PlayerMovementComponent>();
-		auto p = player->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width, s->getSprite().getLocalBounds().height));
-		p->getBody()->SetSleepingAllowed(false);
-		p->getBody()->SetFixedRotation(true);
-		ents.list.push_back(player);
-	}
+	_player = make_player();
+
 	//Create Ghost
-	{
-		ghost = makeEntity();
-		ghost->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]));
-		ghost->addTag("ghost");
-		auto s = ghost->addComponent<SpriteComponent>();
-		auto tex = Resources::get<Texture>("tex.png");
-		s->setTexture(tex);
-		s->getSprite().setTextureRect(sf::IntRect(165, 0, 32, 32));
-		s->getSprite().setScale(1.5f, 1.5f);
-		s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
-		auto g = ghost->addComponent<PhysicsComponent>(false, Vector2f(s->getSprite().getLocalBounds().width, 
-			s->getSprite().getLocalBounds().height));
-		g->getBody()->SetSleepingAllowed(false);
-		g->getBody()->SetFixedRotation(true);
-		ghost->addComponent<EnemyAIComponent>();
-		ents.list.push_back(ghost);
-	}
+	_ghost = make_ghost();
 
 	// Add PathFinding
 	{
 		auto path = pathFind(sf::Vector2i(1, 1), sf::Vector2i(ls::getWidth() - 2, ls::getHeight() - 2));
-		ai = ghost->addComponent<PathfindingComponent>();
-		ai->setPath(path);
+		_ghost->addComponent<PathfindingComponent>();
+		_ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
 	}
 
-	// Add physics colliders to level tiles.
-	{
-		auto walls = ls::findTiles(ls::WALL);
-		auto blocks = ls::findTiles(ls::BREAKABLE);
+	// Add Physics to Walls
+	make_walls();
 
-		for (auto w : walls) {
-			auto e = makeEntity();
-			e->addTag("wall");
-			e->setPosition(ls::getTilePosition(w) + Vector2f(ls::getTileSize() / 2, ls::getTileSize() / 2));
-		    e->addComponent<PhysicsComponent>(false, Vector2f(ls::getTileSize(), ls::getTileSize()));
-
-			auto s = e->addComponent<SpriteComponent>();
-			auto tex = Resources::get<Texture>("tex.png");
-			s->setTexture(tex);
-			s->getSprite().setTextureRect(sf::IntRect(32*9+5, 0, 32, 32));
-			s->getSprite().setScale(1.875f, 1.875f);
-			s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
-
-			ents.list.push_back(e);
-		}
-
-		for (auto w : blocks) 
-		{		
-			auto e = makeEntity();
-			e->addTag("breakable");			
-			e->setPosition(ls::getTilePosition(w) + Vector2f(ls::getTileSize() / 2, ls::getTileSize() / 2));
-			e->addComponent<PhysicsComponent>(false, Vector2f(ls::getTileSize(), ls::getTileSize()));
-			
-			auto s = e->addComponent<SpriteComponent>();
-			auto tex = Resources::get<Texture>("tex.png");
-			s->setTexture(tex);
-			s->getSprite().setTextureRect(sf::IntRect(0, 32, 32, 32));
-			s->getSprite().setScale(1.875f, 1.875f);
-			s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
-			e->addComponent<TileComponent>();
-			ents.list.push_back(e);
-		}
-	}
+	// Add physics and tile_component to breakable walls
+	make_breakable_walls();
 }
 
 void SinglePlayerScene::Update(const double& dt) {
 
-	auto g = ghost;
-
-	if (g->GetCompatibleComponent<EnemyAIComponent>()[0]->_state == EnemyAIComponent::CHASING)
+	if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->_state == EnemyAIComponent::CHASING)
 	{
-		auto char_relative = (Vector2i)ghost->getPosition() - Vector2i(ls::getOffset());
+		auto char_relative = (Vector2i)_ghost->getPosition() - Vector2i(ls::getOffset());
 		auto char_tile = Vector2i(char_relative / (int)ls::getTileSize());
-		auto player_relative = player->getPosition() - ls::getOffset();
+		auto player_relative = _player->getPosition() - ls::getOffset();
 		auto player_tile = Vector2i(player_relative / ls::getTileSize());
 		auto path = pathFind(char_tile, player_tile);
-		ai->setPath(path);
+		_ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
 	}
 		Scene::Update(dt);
 }

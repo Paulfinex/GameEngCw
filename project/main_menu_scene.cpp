@@ -2,7 +2,7 @@
 #include "system_resources.h"
 #include <LevelSystem.h>
 #include <system_resources.h>
-#include "cmp_text.h"
+#include "components/cmp_text.h"
 #include <iostream>
 #include <SFML/Window/Keyboard.hpp>
 #include "engine.h"
