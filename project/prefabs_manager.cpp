@@ -15,6 +15,7 @@
 #include "system_resources.h"
 #include "single_player_scene.h"
 #include "components/cmp_text.h"
+#include "components/cmp_treasure.h"
 
 using namespace std;
 using namespace sf;
@@ -105,6 +106,26 @@ void make_breakable_walls()
 		e->addComponent<TileComponent>();
 		Engine::GetActiveScene()->ents.list.push_back(e);
 	}
+}
+// Create Treasure
+std::shared_ptr<Entity> make_treasure()
+{
+
+	auto treasure = Engine::GetActiveScene()->makeEntity();
+	treasure->setPosition(ls::getTilePosition(ls::findTiles(ls::EMPTY)[5]));
+	treasure->addTag("treasure");
+	auto s = treasure->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("treasure.png");
+	s->setTexture(tex);
+	s->getSprite().setTextureRect(sf::IntRect(0, 0, 32, 32));
+	s->getSprite().setScale(1.5f, 1.5f);
+	s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
+	treasure->addComponent<TreasureComponent>();
+	auto p = treasure->addComponent<PhysicsComponent>(false, Vector2f(s->getSprite().getLocalBounds().width + 10.f, s->getSprite().getLocalBounds().height + 10.f));
+
+	Engine::GetActiveScene()->ents.list.push_back(treasure);
+	return treasure;
+
 }
 
 // Create Buttons

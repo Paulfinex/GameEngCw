@@ -5,6 +5,7 @@ void TileComponent::update(double dt)
 {
     if(_health <= 0 && delayDeath)
 	{
+
 		_parent->setForDelete();
 
 	}

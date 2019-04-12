@@ -33,6 +33,9 @@ void SinglePlayerScene::Load() {
 	//Create Ghost
 	_ghost = make_ghost();
 
+	//Treasure test
+	_treasure = make_treasure();
+
 	// Add PathFinding
 	{
 		auto path = pathFind(sf::Vector2i(1, 1), sf::Vector2i(ls::getWidth() - 2, ls::getHeight() - 2));

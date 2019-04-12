@@ -6,6 +6,7 @@
 #include "system_resources.h"
 #include "engine.h"
 #include "cmp_tile.h"
+#include "cmp_treasure.h"
 
 using namespace sf;
 using namespace std;
@@ -83,6 +84,8 @@ void PlayerMovementComponent::update(double dt) {
 	{
 		for (auto &t : touching)
 		{
+			// Ghost collision check
+
 			auto ghosts = Engine::GetActiveScene()->ents.find("ghost");
 			if (_parent->isAlive())
 			{
@@ -90,8 +93,11 @@ void PlayerMovementComponent::update(double dt) {
 					if (t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
 					{
 						//_parent->setForDelete();  
+
+						//b->setForDelete();
 					}
 			}
+
 		}
 	}
 
