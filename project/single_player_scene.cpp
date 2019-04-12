@@ -9,14 +9,13 @@
 #include "ecm.h"
 #include "components/cmp_tile.h"
 #include "components/cmp_sprite.h"
-#include <map>
 #include "system_renderer.h"
 #include "engine.h"
 #include "components/cmp_ghost.h"
 #include "components/cmp_pathfind.h"
 #include "pathfinder.h"
 #include "system_resources.h"
-#include "preabs_manager.h"
+#include "prefabs_manager.h"
 
 using namespace std;
 using namespace sf;

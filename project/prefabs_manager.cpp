@@ -1,4 +1,4 @@
-#include "preabs_manager.h"
+#include "prefabs_manager.h"
 #include "levelsystem.h"
 #include "components/cmp_sprite.h"
 #include "components/cmp_player_movement.h"
@@ -14,6 +14,7 @@
 #include "pathfinder.h"
 #include "system_resources.h"
 #include "single_player_scene.h"
+#include "components/cmp_text.h"
 
 using namespace std;
 using namespace sf;
@@ -104,4 +105,31 @@ void make_breakable_walls()
 		e->addComponent<TileComponent>();
 		Engine::GetActiveScene()->ents.list.push_back(e);
 	}
+}
+
+// Create Buttons
+std::shared_ptr<Entity> make_button(string buttonText)
+{
+	auto button = Engine::GetActiveScene()->makeEntity();
+
+	auto b = button->addComponent<ShapeComponent>();
+	b->setShape<RectangleShape>(Vector2f(350.0f, 34.0f));
+	b->getShape().setOrigin(b->getShape().getLocalBounds().width / 2, b->getShape().getLocalBounds().height / 2);
+	b->getShape().setFillColor(Color(116, 63, 67, 100));
+
+	auto t = button->addComponent<TextComponent>(buttonText);
+	t->getText()->setOrigin(350.0f / 2 - 16.0f, t->getText()->getLocalBounds().height / 2 + 6.0f);
+	t->getText()->setColor(Color(228, 166, 114, 100));
+	//button->addComponent<ButtonComponent>(s, t);
+
+	return button;
+}
+
+std::shared_ptr<Entity> make_logo()
+{
+	auto logo = Engine::GetActiveScene()->makeEntity();
+	auto l = logo->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("main_menu.png");
+	l->setTexture(tex);
+	return logo;
 }

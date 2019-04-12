@@ -17,7 +17,7 @@ PlayerMovementComponent::PlayerMovementComponent(Entity* p)
 {
 	_groundspeed = 160.f;
 	miningDirection = { 1.0f, 0.0f };
-	digCD = 0;
+	digCD = 1.f;
 }
 
 void PlayerMovementComponent::update(double dt) {
@@ -70,7 +70,11 @@ void PlayerMovementComponent::update(double dt) {
 		{
 			DigIT();
 		}
-		digCD -= dt;
+
+		else if (digCD >= 0)
+		{
+			digCD -= dt;
+		}
 	}
 
 	auto touching = _parent->get_components<PhysicsComponent>()[0]->getTouching();
