@@ -5,6 +5,9 @@
 #include "main_menu_scene.h"
 #include "option_scene.h"
 #include "engine.h"
+#include "game_over.h"
+#include "win_screen.h"
+
 
 
 static uint16_t game_width = 1920;
@@ -14,5 +17,5 @@ extern MainMenuScene mainMenu;
 extern SinglePlayerScene singlePlayer;
 // externMultiplayerScene multiPlayer;
 extern OptionScene optionMenu;
-//extern WinScene winScreen;
-//extern GameOver gameOverScreen
+extern VictoryScene winScreen;
+extern GameOverScene gameOverScreen;

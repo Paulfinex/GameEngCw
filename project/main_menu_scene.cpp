@@ -20,7 +20,7 @@ void MainMenuScene::Load()
 	float offSet = 45.0f;
 	_delay = 0.3f;
 	// Load Logo
-	make_logo();
+	make_logo("main_menu.png");
 	// Button single player scene
 	_buttonSinglePlayer =  make_button("Singleplayer");
 	_buttonSinglePlayer->setPosition({ (float)Engine::GetWindow().getSize().x / 2,(float)Engine::GetWindow().getSize().y / 2 + offSet});

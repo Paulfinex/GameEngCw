@@ -16,16 +16,17 @@
 #include "pathfinder.h"
 #include "system_resources.h"
 #include "prefabs_manager.h"
+#include "game.h"
 
 using namespace std;
 using namespace sf;
 
+double delay = 0.2f;
 
 void SinglePlayerScene::Load() {
 
+	Engine::GetWindow().setMouseCursorVisible(false);
 	ls::loadLevelFile("res/maps/map1.txt", 60);
-	//auto ho = Engine::getWindowSize().y - (ls::getHeight() * 60);
-	//ls::setOffset(Vector2f(0, ho));
 
 	// Create Player
 	_player = make_player();
@@ -45,11 +46,13 @@ void SinglePlayerScene::Load() {
 
 	// Add physics and tile_component to breakable walls
 	make_breakable_walls();
+
+	setLoaded(true);
 }
 
 void SinglePlayerScene::Update(const double& dt) {
 
-	if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->_state == EnemyAIComponent::CHASING)
+	if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->getState() == EnemyAIComponent::CHASING)
 	{
 		auto char_relative = (Vector2i)_ghost->getPosition() - Vector2i(ls::getOffset());
 		auto char_tile = Vector2i(char_relative / (int)ls::getTileSize());
@@ -58,16 +61,33 @@ void SinglePlayerScene::Update(const double& dt) {
 		auto path = pathFind(char_tile, player_tile);
 		_ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
 	}
-		Scene::Update(dt);
+	else if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->getState() == EnemyAIComponent::KILLING)
+	{
+		if (delay >= 0) { delay -= dt; }
+
+		if (delay <= 0)
+		{
+			delay = 0.2f;
+			Engine::ChangeScene(&gameOverScreen);
+		}
+	}
+
+	Scene::Update(dt);
 }
 
 void SinglePlayerScene::Render() {
-	ls::render(Engine::GetWindow()); // REMEMBER THIS
+	ls::render(Engine::GetWindow());
 	Scene::Render();
 }
 
-void SinglePlayerScene::respawn() {}
+void SinglePlayerScene::UnLoad()
+{
+	_player.reset();
+	_ghost.reset();
+	
+	ls::unload();
 
-void SinglePlayerScene::UnLoad(){}
+	Scene::UnLoad();
+}
 
 

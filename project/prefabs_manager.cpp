@@ -125,11 +125,11 @@ std::shared_ptr<Entity> make_button(string buttonText)
 	return button;
 }
 
-std::shared_ptr<Entity> make_logo()
+std::shared_ptr<Entity> make_logo(string file_name)
 {
 	auto logo = Engine::GetActiveScene()->makeEntity();
 	auto l = logo->addComponent<SpriteComponent>();
-	auto tex = Resources::get<Texture>("main_menu.png");
+	auto tex = Resources::get<Texture>(file_name);
 	l->setTexture(tex);
 	return logo;
 }

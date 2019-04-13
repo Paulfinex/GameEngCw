@@ -76,25 +76,6 @@ void PlayerMovementComponent::update(double dt) {
 			digCD -= dt;
 		}
 	}
-
-	auto touching = _parent->get_components<PhysicsComponent>()[0]->getTouching();
-
-	if (touching.size() > 0)
-	{
-		for (auto &t : touching)
-		{
-			auto ghosts = Engine::GetActiveScene()->ents.find("ghost");
-			if (_parent->isAlive())
-			{
-				for (auto &b : ghosts)
-					if (t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
-					{
-						//_parent->setForDelete();  
-					}
-			}
-		}
-	}
-
 }
 
 sf::Vector2f PlayerMovementComponent::getMiningDirection()
@@ -118,7 +99,8 @@ void PlayerMovementComponent::DigIT()
 			auto blocksToDamage = Engine::GetActiveScene()->ents.find("breakable");
 
 			for(auto &b : blocksToDamage)
-			if (t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())			
+			if (t->GetFixtureA() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture() ||
+				t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
 			{
 				b->GetCompatibleComponent<TileComponent>()[0]->hitHandler();
 				digCD = 0.5;

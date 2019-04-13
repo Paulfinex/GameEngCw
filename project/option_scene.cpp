@@ -19,9 +19,9 @@ using namespace sf;
 
 void OptionScene::Load()
 {
-	_delay = 0.2f;
+	_delay = 0.1f;
 
-	make_logo();
+	make_logo("main_menu.png");
 
 	_buttonResolution = make_button("Resolution");
 	_buttonResolution->setPosition({ (float)Engine::GetWindow().getSize().x / 2,(float)Engine::GetWindow().getSize().y / 2 + _offSet});
@@ -75,7 +75,7 @@ void OptionScene::Update(const double& dt)
 	
 	if (_delay <= 0)
 	{
-		_delay = 0.2f;
+		_delay = 0.1f;
 		// Check buttons if selected
 		{
 			if (ButtonHandling(_buttonResolution, mousePos))
@@ -85,7 +85,7 @@ void OptionScene::Update(const double& dt)
 
 			if (ButtonHandling(_buttonWindowedMode, mousePos))
 			{
-
+				Engine::setWindowedMode();
 			}
 
 			if (ButtonHandling(_buttonChangeInput, mousePos))

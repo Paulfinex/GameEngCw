@@ -3,7 +3,9 @@
 
 void TileComponent::update(double dt)
 {
-    if(_health <= 0 && delayDeath)
+	delayDamage = -dt;
+
+    if(_health <= 0)
 	{
 		_parent->setForDelete();
 
@@ -16,7 +18,12 @@ TileComponent::TileComponent(Entity * p) :Component(p)
 
 void TileComponent::hitHandler()
 {
-	_health--;
+	if(delayDamage <= 0.f)
+	{
+		delayDamage = 0.5f;
+
+		_health--;
+	}
 }
 
 int TileComponent::getHealth()
