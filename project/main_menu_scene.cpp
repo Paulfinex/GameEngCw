@@ -42,7 +42,7 @@ void MainMenuScene::Load()
 
 void MainMenuScene::Update(const double& dt) 
 {
-	if (_delay >= 0)
+	if (_delay > 0)
 	{
 		_delay -= dt;
 	}
@@ -51,7 +51,7 @@ void MainMenuScene::Update(const double& dt)
 
 	if (_delay <= 0)
 	{
-		_delay = 0.2f;
+		_delay = 0.1f;
 		// Check buttons if selected
 		{
 			if (ButtonHandling(_buttonSinglePlayer, mousePos))

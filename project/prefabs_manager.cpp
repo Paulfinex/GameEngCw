@@ -15,6 +15,7 @@
 #include "system_resources.h"
 #include "single_player_scene.h"
 #include "components/cmp_text.h"
+#include "components/cmp_pickaxe.h"
 
 using namespace std;
 using namespace sf;
@@ -32,12 +33,34 @@ std::shared_ptr<Entity> make_player()
 	s->getSprite().setScale(1.5f, 1.5f);
 	s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
 	player->addComponent<PlayerMovementComponent>();
-	auto p = player->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width + 10.f, s->getSprite().getLocalBounds().height + 10.f));
+	auto p = player->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width, s->getSprite().getLocalBounds().height));
 	p->getBody()->SetSleepingAllowed(false);
 	p->getBody()->SetFixedRotation(true);
 
 	Engine::GetActiveScene()->ents.list.push_back(player);
 	return player;
+}
+
+// Create Player
+void make_pickaxe()
+{
+	Vector2f offset = { 20.f, 20.f };
+	auto player = Engine::GetActiveScene()->ents.find("player")[0];
+	auto direction = player->GetCompatibleComponent<PlayerMovementComponent>()[0]->getMiningDirection();
+	direction.y *= -1;
+	auto pos = player->getPosition() + offset * direction;
+	auto pickaxe = Engine::GetActiveScene()->makeEntity();
+	pickaxe->setPosition(pos);
+	pickaxe->addTag("pickaxe");
+	auto s = pickaxe->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("pickaxe.png");
+	s->setTexture(tex);
+	s->getSprite().setScale(1.5f, 1.5f);
+	s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
+	auto phys = pickaxe->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width, s->getSprite().getLocalBounds().height));
+	phys->getBody()->SetBullet(true);
+	pickaxe->addComponent<PickAxeComponent>();
+
 }
 
 //Create Ghost
@@ -120,8 +143,6 @@ std::shared_ptr<Entity> make_button(string buttonText)
 	auto t = button->addComponent<TextComponent>(buttonText);
 	t->getText()->setOrigin(350.0f / 2 - 16.0f, t->getText()->getLocalBounds().height / 2 + 6.0f);
 	t->getText()->setColor(Color(228, 166, 114, 100));
-	//button->addComponent<ButtonComponent>(s, t);
-
 	return button;
 }
 

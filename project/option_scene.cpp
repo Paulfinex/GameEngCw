@@ -66,7 +66,7 @@ void OptionScene::Load()
 
 void OptionScene::Update(const double& dt)
 {
-	if (_delay >= 0)
+	if (_delay > 0)
 	{
 		_delay -= dt;
 	}

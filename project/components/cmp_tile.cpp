@@ -3,7 +3,7 @@
 
 void TileComponent::update(double dt)
 {
-	delayDamage = -dt;
+	if (delayDamage > 0) { delayDamage = -dt; }
 
     if(_health <= 0)
 	{

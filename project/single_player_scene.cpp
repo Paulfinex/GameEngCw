@@ -63,7 +63,7 @@ void SinglePlayerScene::Update(const double& dt) {
 	}
 	else if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->getState() == EnemyAIComponent::KILLING)
 	{
-		if (delay >= 0) { delay -= dt; }
+		if (delay > 0) { delay -= dt; }
 
 		if (delay <= 0)
 		{
