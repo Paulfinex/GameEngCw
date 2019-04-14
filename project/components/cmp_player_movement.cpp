@@ -6,19 +6,20 @@
 #include "system_resources.h"
 #include "engine.h"
 #include "cmp_tile.h"
+#include "../prefabs_manager.h"
 #include "cmp_treasure.h"
+
 
 using namespace sf;
 using namespace std;
 
-double digCD;
+double clickDelay = 0.f;
 
 PlayerMovementComponent::PlayerMovementComponent(Entity* p)
 	: Component(p) 
 {
 	_groundspeed = 160.f;
 	miningDirection = { 1.0f, 0.0f };
-	digCD = 1.f;
 }
 
 void PlayerMovementComponent::update(double dt) {
@@ -40,24 +41,23 @@ void PlayerMovementComponent::update(double dt) {
 		if (Keyboard::isKeyPressed(Keyboard::Left)) {
 			direction.x--;
 			_facing = LEFT;
+			miningDirection = { -1.0f, 0.0f };
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Right)) {
 			direction.x++;
 			_facing = RIGHT;
+			miningDirection = { 1.0f, 0.0f };
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Up)) {
 			direction.y++;
 			_facing = UP;
+			miningDirection = { 0.0f, 1.0f };
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Down)) {
 			direction.y--;
 			_facing = DOWN;
+			miningDirection = { 0.0f, -1.0f };
 		}
-	}
-
-	if (direction != Vector2f(0.0, 0.0f))
-	{
-		miningDirection = direction;
 	}
 
 	if (_canMove)
@@ -65,42 +65,15 @@ void PlayerMovementComponent::update(double dt) {
 	else
 		_parent->get_components<PhysicsComponent>()[0]->setVelocity(Vector2f(0.0f, 0.0f));
 
-	if (Keyboard::isKeyPressed(Keyboard::Z) || Joystick::isButtonPressed(0, 0))
+	if (miningColdDown > 0) { miningColdDown -= dt; }
+
+	if (miningColdDown <= 0)
 	{
-		if (digCD <= 0)
+		if (Keyboard::isKeyPressed(Keyboard::Z) || Joystick::isButtonPressed(0, 0))
 		{
 			DigIT();
 		}
-
-		else if (digCD >= 0)
-		{
-			digCD -= dt;
-		}
 	}
-
-	auto touching = _parent->get_components<PhysicsComponent>()[0]->getTouching();
-
-	if (touching.size() > 0)
-	{
-		for (auto &t : touching)
-		{
-			// Ghost collision check
-
-			auto ghosts = Engine::GetActiveScene()->ents.find("ghost");
-			if (_parent->isAlive())
-			{
-				for (auto &b : ghosts)
-					if (t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())
-					{
-						//_parent->setForDelete();  
-
-						//b->setForDelete();
-					}
-			}
-
-		}
-	}
-
 }
 
 sf::Vector2f PlayerMovementComponent::getMiningDirection()
@@ -115,21 +88,6 @@ void PlayerMovementComponent::setCanMove(bool m)
 
 void PlayerMovementComponent::DigIT()
 {
-	auto touching = _parent->get_components<PhysicsComponent>()[0]->getTouching();
-
-	if (touching.size() > 0)
-	{
-		for (auto &t : touching)
-		{
-			auto blocksToDamage = Engine::GetActiveScene()->ents.find("breakable");
-
-			for(auto &b : blocksToDamage)
-			if (t->GetFixtureB() == b->GetCompatibleComponent<PhysicsComponent>()[0]->getFixture())			
-			{
-				b->GetCompatibleComponent<TileComponent>()[0]->hitHandler();
-				digCD = 0.5;
-				break;
-			}
-		}
-	}
+	make_pickaxe();
+	miningColdDown = 0.5f;
 }

@@ -4,6 +4,8 @@
 #include "engine.h"
 #include "game.h"
 
+
+
 using namespace sf;
 using namespace std;
 
@@ -11,8 +13,8 @@ MainMenuScene mainMenu;
 SinglePlayerScene singlePlayer;
 //MultiplayerScene multiPlayer;
 OptionScene optionMenu;
-//WinScene winScreen;
-//GameOver gameOverScreen
+VictoryScene winScreen;
+GameOverScene gameOverScreen;
 
 
 int main() {

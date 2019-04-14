@@ -15,6 +15,7 @@
 #include "system_resources.h"
 #include "single_player_scene.h"
 #include "components/cmp_text.h"
+#include "components/cmp_pickaxe.h"
 #include "components/cmp_treasure.h"
 
 using namespace std;
@@ -33,7 +34,7 @@ std::shared_ptr<Entity> make_player()
 	s->getSprite().setScale(1.5f, 1.5f);
 	s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
 	player->addComponent<PlayerMovementComponent>();
-	auto p = player->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width + 10.f, s->getSprite().getLocalBounds().height + 10.f));
+	auto p = player->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width, s->getSprite().getLocalBounds().height));
 	p->getBody()->SetSleepingAllowed(false);
 	p->getBody()->SetFixedRotation(true);
 
@@ -41,8 +42,30 @@ std::shared_ptr<Entity> make_player()
 	return player;
 }
 
+// Create Player
+void make_pickaxe()
+{
+	Vector2f offset = { 20.f, 20.f };
+	auto player = Engine::GetActiveScene()->ents.find("player")[0];
+	auto direction = player->GetCompatibleComponent<PlayerMovementComponent>()[0]->getMiningDirection();
+	direction.y *= -1;
+	auto pos = player->getPosition() + offset * direction;
+	auto pickaxe = Engine::GetActiveScene()->makeEntity();
+	pickaxe->setPosition(pos);
+	pickaxe->addTag("pickaxe");
+	auto s = pickaxe->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("pickaxe.png");
+	s->setTexture(tex);
+	s->getSprite().setScale(1.5f, 1.5f);
+	s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
+	auto phys = pickaxe->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width, s->getSprite().getLocalBounds().height));
+	phys->getBody()->SetBullet(true);
+	pickaxe->addComponent<PickAxeComponent>();
+
+}
+
 //Create Ghost
-std::shared_ptr<Entity> make_ghost()
+std::shared_ptr<Entity> make_ghost(double _delay)
 {
 	auto ghost = Engine::GetActiveScene()->makeEntity();
 	ghost->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]));
@@ -58,6 +81,14 @@ std::shared_ptr<Entity> make_ghost()
 	g->getBody()->SetSleepingAllowed(false);
 	g->getBody()->SetFixedRotation(true);
 	ghost->addComponent<EnemyAIComponent>();
+	
+	// Add PathFinding
+	{
+		auto path = pathFind(sf::Vector2i(1, 1), sf::Vector2i(ls::getWidth() - 2, ls::getHeight() - 2));
+		ghost->addComponent<PathfindingComponent>(_delay);
+		ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
+	}
+
 	Engine::GetActiveScene()->ents.list.push_back(ghost);
 	return ghost;
 }
@@ -100,7 +131,7 @@ void make_breakable_walls()
 		auto s = e->addComponent<SpriteComponent>();
 		auto tex = Resources::get<Texture>("tex.png");
 		s->setTexture(tex);
-		s->getSprite().setTextureRect(sf::IntRect(0, 32, 32, 32));
+		s->getSprite().setTextureRect(sf::IntRect(0, 0, 32, 32));
 		s->getSprite().setScale(1.875f, 1.875f);
 		s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
 		e->addComponent<TileComponent>();
@@ -125,7 +156,6 @@ std::shared_ptr<Entity> make_treasure()
 
 	Engine::GetActiveScene()->ents.list.push_back(treasure);
 	return treasure;
-
 }
 
 // Create Buttons
@@ -141,16 +171,14 @@ std::shared_ptr<Entity> make_button(string buttonText)
 	auto t = button->addComponent<TextComponent>(buttonText);
 	t->getText()->setOrigin(350.0f / 2 - 16.0f, t->getText()->getLocalBounds().height / 2 + 6.0f);
 	t->getText()->setColor(Color(228, 166, 114, 100));
-	//button->addComponent<ButtonComponent>(s, t);
-
 	return button;
 }
 
-std::shared_ptr<Entity> make_logo()
+std::shared_ptr<Entity> make_logo(string file_name)
 {
 	auto logo = Engine::GetActiveScene()->makeEntity();
 	auto l = logo->addComponent<SpriteComponent>();
-	auto tex = Resources::get<Texture>("main_menu.png");
+	auto tex = Resources::get<Texture>(file_name);
 	l->setTexture(tex);
 	return logo;
 }

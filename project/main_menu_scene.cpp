@@ -20,16 +20,18 @@ void MainMenuScene::Load()
 	float offSet = 45.0f;
 	_delay = 0.3f;
 	// Load Logo
-	make_logo();
+	make_logo("main_menu.png");
 	// Button single player scene
 	_buttonSinglePlayer =  make_button("Singleplayer");
 	_buttonSinglePlayer->setPosition({ (float)Engine::GetWindow().getSize().x / 2,(float)Engine::GetWindow().getSize().y / 2 + offSet});
-
+	
+	/*
 	_buttonMultiPlayer = make_button("Multiplayer - TBA");
 	_buttonMultiPlayer->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonSinglePlayer->getPosition().y + offSet });
+	*/
 
 	_buttonOptions = make_button("Options");
-	_buttonOptions->setPosition({ (float)Engine::GetWindow().getSize().x / 2,  _buttonMultiPlayer->getPosition().y + offSet });
+	_buttonOptions->setPosition({ (float)Engine::GetWindow().getSize().x / 2,  _buttonSinglePlayer->getPosition().y + offSet });
 
 	_buttonQuit = make_button("Exit Game");
 	_buttonQuit->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonOptions->getPosition().y + offSet });
@@ -42,7 +44,7 @@ void MainMenuScene::Load()
 
 void MainMenuScene::Update(const double& dt) 
 {
-	if (_delay >= 0)
+	if (_delay > 0)
 	{
 		_delay -= dt;
 	}
@@ -51,7 +53,7 @@ void MainMenuScene::Update(const double& dt)
 
 	if (_delay <= 0)
 	{
-		_delay = 0.2f;
+		_delay = 0.1f;
 		// Check buttons if selected
 		{
 			if (ButtonHandling(_buttonSinglePlayer, mousePos))
@@ -59,11 +61,11 @@ void MainMenuScene::Update(const double& dt)
 				Engine::ChangeScene(&singlePlayer);
 			}
 
-			// TBA multiplayer //
+			/*// TBA multiplayer //
 			if (ButtonHandling(_buttonMultiPlayer, mousePos))
 			{
 				cout << "Not Available - TBA" << endl;
-			}
+			}*/
 
 			if (ButtonHandling(_buttonOptions, mousePos))
 			{

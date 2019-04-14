@@ -16,6 +16,9 @@ std::string Engine::_gameName;
 static bool loading = false;
 static float loadingspinner = 0.f;
 static float loadingTime;
+bool switchModeCheck = true;
+bool _windowed = false;
+bool _fullscreen = false;
 static RenderWindow* _window;
 
 void Loading_update(float dt, const Scene* const scn) {
@@ -84,13 +87,14 @@ void Engine::Render(RenderWindow& window) {
 
 void Engine::Start(unsigned int width, unsigned int height,
 	const std::string& gameName, Scene* scn) {
-	RenderWindow window(VideoMode(width, height), gameName, Style::Fullscreen | Style::Titlebar | Style::Close);
+	RenderWindow window(VideoMode(width, height), gameName, _windowed ? Style::Titlebar : Style::Fullscreen | Style::Close);
 	_gameName = gameName;
 	_window = &window;
 	Renderer::initialise(window);
 	Physics::initialise();
 	ChangeScene(scn);
-	while (window.isOpen()) {
+	while (window.isOpen()) 
+	{
 		Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == Event::Closed) {
@@ -101,11 +105,25 @@ void Engine::Start(unsigned int width, unsigned int height,
 			window.close();
 		}
 
+		if (_windowed)
+		{
+			window.create(VideoMode(width, height), gameName, Style::Titlebar | Style::Close);
+			_window = &window;
+			_windowed = false;
+		}
+		if (_fullscreen)
+		{
+			window.create(VideoMode(width, height), gameName, Style::Fullscreen | Style::Close);
+			_window = &window;
+			_fullscreen = false;
+		}
+
 		window.clear();
 		Update();
 		Render(window);
 		window.display();
 	}
+
 	if (_activeScene != nullptr) {
 		_activeScene->UnLoad();
 		_activeScene = nullptr;
@@ -137,6 +155,20 @@ void Engine::ChangeScene(Scene* s) {
 		loadingTime = 0;
 		_activeScene->LoadAsync();
 		loading = true;
+	}
+}
+
+void Engine::setWindowedMode()
+{
+	if (!_windowed && switchModeCheck)
+	{
+		_windowed = true;
+		switchModeCheck = false;
+	}
+	else if (!_fullscreen && !switchModeCheck)
+	{
+		_fullscreen = true;
+		switchModeCheck = true;
 	}
 }
 
