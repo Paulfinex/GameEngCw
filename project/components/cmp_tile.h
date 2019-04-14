@@ -3,7 +3,7 @@
 #include <ecm.h>
 class TileComponent : public Component {
 protected:
-	int _health = 1;
+	int _health = 3;
 	double delayDamage = 0.f;
 public:
 	void render() override {}

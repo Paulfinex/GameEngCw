@@ -32,14 +32,7 @@ void SinglePlayerScene::Load() {
 	_player = make_player();
 
 	//Create Ghost
-	_ghost = make_ghost();
-
-	// Add PathFinding
-	{
-		auto path = pathFind(sf::Vector2i(1, 1), sf::Vector2i(ls::getWidth() - 2, ls::getHeight() - 2));
-		_ghost->addComponent<PathfindingComponent>();
-		_ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
-	}
+	_ghost = make_ghost(1.2f);
 
 	// Add Physics to Walls
 	make_walls();

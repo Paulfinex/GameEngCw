@@ -87,5 +87,5 @@ void PlayerMovementComponent::setCanMove(bool m)
 void PlayerMovementComponent::DigIT()
 {
 	make_pickaxe();
-	miningColdDown = 1.5f;
+	miningColdDown = 0.5f;
 }

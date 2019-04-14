@@ -12,7 +12,7 @@ using namespace sf;
 using namespace std;
 void PathfindingComponent::update(double dt) {
 	_elapsed += dt;
-	if (_elapsed >= 1.2f) {
+	if (_elapsed >= _delay) {
 		_elapsed = 0.0;
 		if (_index < _path.size()) {
 
@@ -29,7 +29,10 @@ void PathfindingComponent::update(double dt) {
 	}
 }
 
-PathfindingComponent::PathfindingComponent(Entity* p) : Component(p) {}
+PathfindingComponent::PathfindingComponent(Entity* p, double _folloWtime) : Component(p) 
+{
+	_delay = _folloWtime;
+}
 
 void PathfindingComponent::setPath(std::vector<sf::Vector2i>& path) {
 	_index = 0;

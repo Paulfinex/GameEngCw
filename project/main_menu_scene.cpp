@@ -24,12 +24,14 @@ void MainMenuScene::Load()
 	// Button single player scene
 	_buttonSinglePlayer =  make_button("Singleplayer");
 	_buttonSinglePlayer->setPosition({ (float)Engine::GetWindow().getSize().x / 2,(float)Engine::GetWindow().getSize().y / 2 + offSet});
-
+	
+	/*
 	_buttonMultiPlayer = make_button("Multiplayer - TBA");
 	_buttonMultiPlayer->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonSinglePlayer->getPosition().y + offSet });
+	*/
 
 	_buttonOptions = make_button("Options");
-	_buttonOptions->setPosition({ (float)Engine::GetWindow().getSize().x / 2,  _buttonMultiPlayer->getPosition().y + offSet });
+	_buttonOptions->setPosition({ (float)Engine::GetWindow().getSize().x / 2,  _buttonSinglePlayer->getPosition().y + offSet });
 
 	_buttonQuit = make_button("Exit Game");
 	_buttonQuit->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonOptions->getPosition().y + offSet });
@@ -59,11 +61,11 @@ void MainMenuScene::Update(const double& dt)
 				Engine::ChangeScene(&singlePlayer);
 			}
 
-			// TBA multiplayer //
+			/*// TBA multiplayer //
 			if (ButtonHandling(_buttonMultiPlayer, mousePos))
 			{
 				cout << "Not Available - TBA" << endl;
-			}
+			}*/
 
 			if (ButtonHandling(_buttonOptions, mousePos))
 			{

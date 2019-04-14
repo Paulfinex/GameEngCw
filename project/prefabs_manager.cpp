@@ -64,7 +64,7 @@ void make_pickaxe()
 }
 
 //Create Ghost
-std::shared_ptr<Entity> make_ghost()
+std::shared_ptr<Entity> make_ghost(double _delay)
 {
 	auto ghost = Engine::GetActiveScene()->makeEntity();
 	ghost->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]));
@@ -80,6 +80,14 @@ std::shared_ptr<Entity> make_ghost()
 	g->getBody()->SetSleepingAllowed(false);
 	g->getBody()->SetFixedRotation(true);
 	ghost->addComponent<EnemyAIComponent>();
+	
+	// Add PathFinding
+	{
+		auto path = pathFind(sf::Vector2i(1, 1), sf::Vector2i(ls::getWidth() - 2, ls::getHeight() - 2));
+		ghost->addComponent<PathfindingComponent>(_delay);
+		ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
+	}
+
 	Engine::GetActiveScene()->ents.list.push_back(ghost);
 	return ghost;
 }
@@ -122,7 +130,7 @@ void make_breakable_walls()
 		auto s = e->addComponent<SpriteComponent>();
 		auto tex = Resources::get<Texture>("tex.png");
 		s->setTexture(tex);
-		s->getSprite().setTextureRect(sf::IntRect(0, 32, 32, 32));
+		s->getSprite().setTextureRect(sf::IntRect(0, 0, 32, 32));
 		s->getSprite().setScale(1.875f, 1.875f);
 		s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
 		e->addComponent<TileComponent>();
