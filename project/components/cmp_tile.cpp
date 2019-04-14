@@ -10,6 +10,7 @@ void TileComponent::update(double dt)
 
     if(_health <= 0)
 	{
+
 		_parent->setForDelete();
 
 	}

@@ -34,6 +34,9 @@ void SinglePlayerScene::Load() {
 	//Create Ghost
 	_ghost = make_ghost(1.2f);
 
+	//Treasure test
+	_treasure = make_treasure();
+
 	// Add Physics to Walls
 	make_walls();
 

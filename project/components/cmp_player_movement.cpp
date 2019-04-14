@@ -7,6 +7,8 @@
 #include "engine.h"
 #include "cmp_tile.h"
 #include "../prefabs_manager.h"
+#include "cmp_treasure.h"
+
 
 using namespace sf;
 using namespace std;
