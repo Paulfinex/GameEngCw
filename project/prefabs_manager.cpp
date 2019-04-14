@@ -139,23 +139,26 @@ void make_breakable_walls()
 	}
 }
 // Create Treasure
-std::shared_ptr<Entity> make_treasure()
+void make_treasure()
 {
+	auto _treasure = ls::findTiles(ls::TREASURE);
 
-	auto treasure = Engine::GetActiveScene()->makeEntity();
-	treasure->setPosition(ls::getTilePosition(ls::findTiles(ls::EMPTY)[5]));
-	treasure->addTag("treasure");
-	auto s = treasure->addComponent<SpriteComponent>();
-	auto tex = Resources::get<Texture>("treasure.png");
-	s->setTexture(tex);
-	s->getSprite().setTextureRect(sf::IntRect(0, 0, 32, 32));
-	s->getSprite().setScale(1.5f, 1.5f);
-	s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
-	treasure->addComponent<TreasureComponent>();
-	auto p = treasure->addComponent<PhysicsComponent>(false, Vector2f(s->getSprite().getLocalBounds().width + 10.f, s->getSprite().getLocalBounds().height + 10.f));
+	for (auto t : _treasure)
+	{
+		auto e = Engine::GetActiveScene()->makeEntity();
+		e->addTag("treasure");
+		e->setPosition(ls::getTilePosition(t) + Vector2f(ls::getTileSize() / 2, ls::getTileSize() / 2));
+		
+		auto s = e->addComponent<SpriteComponent>();
+		auto tex = Resources::get<Texture>("treasure.png");
+		s->setTexture(tex);
+		s->getSprite().setScale(1.5f, 1.5f);
+		s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
+		e->addComponent<TreasureComponent>();
+		auto p = e->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width + 10.f, s->getSprite().getLocalBounds().height + 10.f));
 
-	Engine::GetActiveScene()->ents.list.push_back(treasure);
-	return treasure;
+		Engine::GetActiveScene()->ents.list.push_back(e);
+	}
 }
 
 // Create Buttons

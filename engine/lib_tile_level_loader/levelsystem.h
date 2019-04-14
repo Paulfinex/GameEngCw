@@ -18,7 +18,7 @@ public:
 	enum TILES {
 		EMPTY = ' ',
 		START = 's',
-		END = 'e',
+		TREASURE = 't',
 		WALL = 'w',
 		ENEMY = 'n',
 		WAYPOINT = '+',

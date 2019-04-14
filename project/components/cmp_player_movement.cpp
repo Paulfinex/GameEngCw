@@ -25,10 +25,9 @@ PlayerMovementComponent::PlayerMovementComponent(Entity* p)
 void PlayerMovementComponent::update(double dt) {
 
 	auto speed = _groundspeed;
+	
 	// Movement
-
 	sf::Vector2f direction = { 0.0f, 0.0f };
-
 
 	if (Joystick::isConnected(0))
 	{

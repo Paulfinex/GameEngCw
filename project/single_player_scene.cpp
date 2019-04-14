@@ -35,7 +35,7 @@ void SinglePlayerScene::Load() {
 	_ghost = make_ghost(1.2f);
 
 	//Treasure test
-	_treasure = make_treasure();
+	make_treasure();
 
 	// Add Physics to Walls
 	make_walls();
@@ -80,7 +80,6 @@ void SinglePlayerScene::UnLoad()
 {
 	_player.reset();
 	_ghost.reset();
-	
 	ls::unload();
 
 	Scene::UnLoad();

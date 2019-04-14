@@ -30,21 +30,19 @@ void TreasureComponent::update(double dt) {
 
 		for (auto &t : touching)
 		{
-			auto player = Engine::GetActiveScene()->ents.find("player");
+			auto _player = Engine::GetActiveScene()->ents.find("player");
 			if (_parent->isAlive())
 			{
-				for (auto &b : player)
+				for (auto &b : _player)
 				{
-
-					PlayerLoot();
-					
+					if (t->GetFixtureA() == b->get_components<PhysicsComponent>()[0]->getFixture())
+					{
+						PlayerLoot();
+					}
 				}
 			}
-
 		}
 	}
-
-
 }
 
 void TreasureComponent::Spawn()
