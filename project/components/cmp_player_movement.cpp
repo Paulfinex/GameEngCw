@@ -8,13 +8,12 @@
 #include "cmp_tile.h"
 #include "../prefabs_manager.h"
 #include "cmp_treasure.h"
-
+#include "../sound.h"
 
 using namespace sf;
 using namespace std;
-
+extern SoundEffects s;
 double clickDelay = 0.f;
-
 PlayerMovementComponent::PlayerMovementComponent(Entity* p)
 	: Component(p) 
 {
@@ -97,6 +96,8 @@ void PlayerMovementComponent::setCanMove(bool m)
 
 void PlayerMovementComponent::DigIT()
 {
+
+	s.play_pickaxe_hit();
 	make_pickaxe();
 	miningColdDown = 0.5f;
 }

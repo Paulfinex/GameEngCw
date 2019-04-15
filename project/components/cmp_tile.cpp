@@ -3,7 +3,8 @@
 #include "cmp_sprite.h"
 #include "system_resources.h"
 #include "../prefabs_manager.h"
-
+#include "../sound.h"
+extern SoundEffects s;
 void TileComponent::update(double dt)
 {
 	if (delayDamage > 0) { delayDamage = -dt; }
@@ -15,6 +16,8 @@ void TileComponent::update(double dt)
 			make_treasure(_parent->getPosition());
 		}
 		has_treasure = false;
+
+		s.play_break_block();
 		_parent->setForDelete();
 	}
 }

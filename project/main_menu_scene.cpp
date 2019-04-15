@@ -11,9 +11,10 @@
 #include "game.h"
 #include "prefabs_manager.h"
 #include "buttons_manager.h"
-
+#include "sound.h"
 using namespace std;
 using namespace sf;
+SoundEffects s;
 
 void MainMenuScene::Load()
 {
