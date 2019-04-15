@@ -18,6 +18,7 @@ SoundEffects s;
 
 void MainMenuScene::Load()
 {
+	s.play_groove();
 	float offSet = 45.0f;
 	_delay = 0.3f;
 	// Load Logo

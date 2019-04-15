@@ -18,12 +18,12 @@
 #include "game.h"
 #include "components/cmp_text.h"
 #include <cmath> 
-
+#include "sound.h"
 using namespace std;
 using namespace sf;
 
 double delay = 0.2f;
-
+extern SoundEffects s;
 void SinglePlayerScene::Load() {
 
 	Engine::GetActiveScene()->ents.list.clear();
@@ -86,6 +86,7 @@ void SinglePlayerScene::Update(const double& dt) {
 
 	if (_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->HasTreasure())
 	{
+		s.play_timer();
 		if (winTimer > 0) { winTimer -= dt;}
 
 		if (winTimer <= 0)
@@ -94,6 +95,7 @@ void SinglePlayerScene::Update(const double& dt) {
 
 			if (delay <= 0)
 			{
+				s.stop_timer();
 				_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->_setHasTreasure(false);
 				Engine::ChangeScene(&winScreen);
 			}

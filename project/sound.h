@@ -11,9 +11,30 @@ private:
 	sf::Sound breakableSound;
 	sf::SoundBuffer ghostDetBuffer;
 	sf::Sound ghostDetSound;
+	sf::SoundBuffer tickBuffer;
+	sf::Sound tickSound;
+	sf::SoundBuffer clickBuffer;
+	sf::Sound clickSound;
+	sf::SoundBuffer treasureSpawnBuffer;
+	sf::Sound treasureSpawnSound;
+	sf::SoundBuffer treasureLootBuffer;
+	sf::Sound treasureLootSound;
+	sf::SoundBuffer grooveMusicBuffer;
+	sf::Sound grooveMusicSound;
+	sf::SoundBuffer timerBuffer;
+	sf::Sound timerSound;
+
 	double volume = 50.f;
 public:
 	SoundEffects();
+	void play_timer();
+	void stop_timer();
+	void play_groove();
+	void stop_groove();
+	void play_treasure_loot();
+	void play_trasure_spawn();
+	void play_tick();
+	void play_click();
 	void play_break_block();
 	void play_pickaxe_hit();
 	void play_ghost_detection();

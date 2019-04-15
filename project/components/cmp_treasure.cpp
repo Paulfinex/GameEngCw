@@ -7,9 +7,12 @@
 #include "engine.h"
 #include "cmp_tile.h"
 #include "cmp_player_movement.h"
-
+#include "../sound.h"
 using namespace sf;
 using namespace std;
+
+
+extern SoundEffects s;
 
 TreasureComponent::TreasureComponent(Entity* t)
 	: Component(t)
@@ -36,8 +39,10 @@ void TreasureComponent::update(double dt) {
 
 						if (delay <= 0)
 						{
+							
 							PlayerLoot();
 							p->get_components<PlayerMovementComponent>()[0]->_setHasTreasure(true);
+							s.play_treasure_loot();
 						}
 					}
 				}
