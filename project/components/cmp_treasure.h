@@ -7,9 +7,8 @@ class TreasureComponent : public Component {
 public:
 	explicit TreasureComponent(Entity* t);
 	TreasureComponent() = delete;
-	bool _looted = false;
 	void render() override {}
 	void update(double dt);
-	void TreasureComponent::Spawn();
 	void TreasureComponent::PlayerLoot();
+	double delay = 0.5f;
 };

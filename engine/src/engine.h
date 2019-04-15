@@ -5,6 +5,7 @@
 #include <maths.h>
 #include <mutex>
 #include <string>
+#include <map>
 
 class Scene {
 public:
@@ -38,12 +39,16 @@ public:
 	static void setVsync(bool b);
 	static Scene* GetActiveScene();
 	static void setWindowedMode();
-
+	const static std::map<std::string, std::pair<int, int>> RESOLUTION;
+	static void Engine::ChangeResolution(std::string);
+	static std::string CurrRes();
 private:
 	static Scene* _activeScene;
 	static std::string _gameName;
 	static void Update();
 	static void Render(sf::RenderWindow& window);
+	static bool _resolutionChange;
+	static std::string _currRes;
 };
 
 namespace timing {

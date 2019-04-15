@@ -11,12 +11,13 @@
 #include "components/cmp_sprite.h"
 #include "system_renderer.h"
 #include "engine.h"
-#include "components/cmp_ghost.h"
 #include "components/cmp_pathfind.h"
 #include "pathfinder.h"
 #include "system_resources.h"
 #include "prefabs_manager.h"
 #include "game.h"
+#include "components/cmp_text.h"
+#include <cmath> 
 
 using namespace std;
 using namespace sf;
@@ -25,17 +26,17 @@ double delay = 0.2f;
 
 void SinglePlayerScene::Load() {
 
+	Engine::GetActiveScene()->ents.list.clear();
 	Engine::GetWindow().setMouseCursorVisible(false);
 	ls::loadLevelFile("res/maps/map1.txt", 60);
 
 	// Create Player
+	_player.reset();
 	_player = make_player();
 
 	//Create Ghost
+	_ghost.reset();
 	_ghost = make_ghost(1.2f);
-
-	//Treasure test
-	make_treasure();
 
 	// Add Physics to Walls
 	make_walls();
@@ -43,11 +44,25 @@ void SinglePlayerScene::Load() {
 	// Add physics and tile_component to breakable walls
 	make_breakable_walls();
 
+	{
+		_buttonTimer = Engine::GetActiveScene()->makeEntity();
+		auto b = _buttonTimer->addComponent<ShapeComponent>();
+		b->setShape<RectangleShape>(Vector2f(165.0f, 30.0f));
+		b->getShape().setOrigin(b->getShape().getLocalBounds().width / 2 + 10.f, b->getShape().getLocalBounds().height / 2 + 10.f);
+		b->getShape().setFillColor(Color::White);
+
+		auto t = _buttonTimer->addComponent<TextComponent>(to_string(winTimer));
+		t->getText()->setOrigin(b->getShape().getLocalBounds().width / 2 + 10.f, b->getShape().getLocalBounds().height / 2 + 10.f);
+		t->getText()->setColor(Color::Black);
+
+		_buttonTimer->setPosition(Vector2f{ 145.0f,40.0f });
+	}
 	setLoaded(true);
 }
 
 void SinglePlayerScene::Update(const double& dt) {
 
+	_buttonTimer->GetCompatibleComponent<TextComponent>()[0]->SetText(to_string(winTimer));
 	if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->getState() == EnemyAIComponent::CHASING)
 	{
 		auto char_relative = (Vector2i)_ghost->getPosition() - Vector2i(ls::getOffset());
@@ -64,7 +79,24 @@ void SinglePlayerScene::Update(const double& dt) {
 		if (delay <= 0)
 		{
 			delay = 0.2f;
+			_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->_setHasTreasure(false);
 			Engine::ChangeScene(&gameOverScreen);
+		}
+	}
+
+	if (_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->HasTreasure())
+	{
+		if (winTimer > 0) { winTimer -= dt;}
+
+		if (winTimer <= 0)
+		{
+			if (delay > 0) { delay -= dt; }
+
+			if (delay <= 0)
+			{
+				_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->_setHasTreasure(false);
+				Engine::ChangeScene(&winScreen);
+			}
 		}
 	}
 
@@ -78,8 +110,6 @@ void SinglePlayerScene::Render() {
 
 void SinglePlayerScene::UnLoad()
 {
-	_player.reset();
-	_ghost.reset();
 	ls::unload();
 
 	Scene::UnLoad();

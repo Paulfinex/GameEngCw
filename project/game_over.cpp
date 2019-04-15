@@ -22,15 +22,13 @@ void GameOverScene::Load()
 
 	// Button single player scene
 	_buttonRetry = make_button("Retry");
-	_buttonRetry->setPosition({ (float)Engine::GetWindow().getSize().x / 2,(float)Engine::GetWindow().getSize().y / 2 + offSet });
+	_buttonRetry->setPosition({ Engine::GetWindow().getView().getSize().x / 2,Engine::GetWindow().getView().getSize().y / 2 + offSet });
 
 	_buttonMainMenu = make_button("Main Menu");
-	_buttonMainMenu->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonRetry->getPosition().y + offSet });
+	_buttonMainMenu->setPosition({ _buttonRetry->getPosition().x, _buttonRetry->getPosition().y + offSet });
 
 	_buttonQuit = make_button("Exit Game");
-	_buttonQuit->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonMainMenu->getPosition().y + offSet });
-
-	Engine::GetWindow().setView(Engine::GetWindow().getDefaultView());
+	_buttonQuit->setPosition({ _buttonRetry->getPosition().x, _buttonMainMenu->getPosition().y + offSet });
 
 	setLoaded(true);
 }
@@ -51,7 +49,7 @@ void GameOverScene::Update(const double& dt)
 		{
 			if (ButtonHandling(_buttonRetry, mousePos))
 			{
-				Engine::ChangeScene((Scene*)&singlePlayer);
+				Engine::ChangeScene(&singlePlayer);
 			}
 
 			if (ButtonHandling(_buttonMainMenu, mousePos))

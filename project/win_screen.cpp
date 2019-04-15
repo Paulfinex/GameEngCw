@@ -26,12 +26,10 @@ void VictoryScene::Load()
 	_buttonRestart->setPosition({ (float)Engine::GetWindow().getSize().x / 2,(float)Engine::GetWindow().getSize().y / 2 + offSet });
 
 	_buttonMainMenu = make_button("Main Menu");
-	_buttonMainMenu->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonRestart->getPosition().y + offSet });
+	_buttonMainMenu->setPosition({ _buttonRestart->getPosition().x, _buttonRestart->getPosition().y + offSet });
 
 	_buttonQuit = make_button("Exit Game");
-	_buttonQuit->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonMainMenu->getPosition().y + offSet });
-
-	Engine::GetWindow().setView(Engine::GetWindow().getDefaultView());
+	_buttonQuit->setPosition({ _buttonRestart->getPosition().x, _buttonMainMenu->getPosition().y + offSet });
 
 	setLoaded(true);
 

@@ -2,7 +2,6 @@
 #include <ecm.h>
 #include <SFML/Graphics.hpp>
 
-
 class PathfindingComponent : public Component {
 protected:
 	std::vector<sf::Vector2i> _path;

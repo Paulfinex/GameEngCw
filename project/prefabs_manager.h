@@ -4,7 +4,7 @@
 
 std::shared_ptr<Entity> make_player();
 std::shared_ptr<Entity> make_ghost(double);
-void make_treasure();
+std::shared_ptr<Entity> make_treasure(sf::Vector2f);
 void make_walls();
 void make_breakable_walls();
 void make_pickaxe();

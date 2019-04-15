@@ -7,6 +7,8 @@
 #include <future>
 #include <iostream>
 #include <stdexcept>
+#include <map>
+
 
 using namespace sf;
 using namespace std;
@@ -20,6 +22,21 @@ bool switchModeCheck = true;
 bool _windowed = false;
 bool _fullscreen = false;
 static RenderWindow* _window;
+std::string Engine::_currRes = "1920x1080";
+bool Engine::_resolutionChange = false;
+
+
+const std::map<std::string, pair<int, int>> Engine::RESOLUTION
+{
+	{"1920x1080", make_pair(1920, 1080)},
+	{"1920x1200", make_pair(1920, 1200)},
+	{"1680x1050", make_pair(1680, 1050)},
+	{"1440x900", make_pair(1440, 900)},
+	{"1366x768", make_pair(1366, 768)},
+	{"1280x800", make_pair(1280, 800)},
+	{"800x600", make_pair(800, 600)},
+	{"640x480", make_pair(640, 480)}
+};
 
 void Loading_update(float dt, const Scene* const scn) {
 	//  cout << "Eng: Loading Screen\n";
@@ -87,12 +104,25 @@ void Engine::Render(RenderWindow& window) {
 
 void Engine::Start(unsigned int width, unsigned int height,
 	const std::string& gameName, Scene* scn) {
+	_resolutionChange = false;
 	RenderWindow window(VideoMode(width, height), gameName, _windowed ? Style::Titlebar : Style::Fullscreen | Style::Close);
 	_gameName = gameName;
 	_window = &window;
 	Renderer::initialise(window);
 	Physics::initialise();
 	ChangeScene(scn);
+
+	// Handle resize with letterbox
+	sf::View view;
+	view.setSize(width, height);
+	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
+
+	#ifdef _DEBUG
+	{
+		setWindowedMode();
+	}
+	#endif
+
 	while (window.isOpen()) 
 	{
 		Event event;
@@ -101,25 +131,34 @@ void Engine::Start(unsigned int width, unsigned int height,
 				window.close();
 			}
 		}
+
+		if (Engine::_resolutionChange)
+		{
+			 window.create(VideoMode(RESOLUTION.at(_currRes).first, RESOLUTION.at(_currRes).second), gameName,
+				(Style::Titlebar | Style::Close));
+			_window = &window;
+			_resolutionChange = false;
+		}
+
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 			window.close();
 		}
-
 		if (_windowed)
 		{
-			window.create(VideoMode(width, height), gameName, Style::Titlebar | Style::Close);
+			window.create(VideoMode(RESOLUTION.at(_currRes).first, RESOLUTION.at(_currRes).second), gameName, Style::Titlebar | Style::Close);
 			_window = &window;
 			_windowed = false;
 		}
 		if (_fullscreen)
 		{
-			window.create(VideoMode(width, height), gameName, Style::Fullscreen | Style::Close);
+			window.create(VideoMode(RESOLUTION.at(_currRes).first, RESOLUTION.at(_currRes).second), gameName, Style::Fullscreen | Style::Close);
 			_window = &window;
 			_fullscreen = false;
 		}
 
 		window.clear();
 		Update();
+		window.setView(view);
 		Render(window);
 		window.display();
 	}
@@ -133,10 +172,14 @@ void Engine::Start(unsigned int width, unsigned int height,
 	// Render::shutdown();
 }
 
-std::shared_ptr<Entity> Scene::makeEntity() {
-	auto e = make_shared<Entity>(this);
-	ents.list.push_back(e);
-	return std::move(e);
+std::string Engine::CurrRes()
+{
+	return _currRes;
+}
+void Engine::ChangeResolution(string resolution)
+{
+	_resolutionChange = true;
+	_currRes = resolution;
 }
 
 void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }
@@ -205,7 +248,7 @@ void Scene::UnLoad() {
 
 void Scene::LoadAsync() { _loaded_future = std::async(&Scene::Load, this); }
 
-sf::Vector2u Engine::getWindowSize() { return _window->getSize(); }
+sf::Vector2u Engine::getWindowSize() { return _window->getSize(); } 
 
 sf::RenderWindow& Engine::GetWindow() { return *_window; }
 
@@ -225,6 +268,13 @@ namespace timing {
 		return dt;
 	}
 } // namespace timing
+
+
+std::shared_ptr<Entity> Scene::makeEntity() {
+	auto e = make_shared<Entity>(this);
+	ents.list.push_back(e);
+	return std::move(e);
+}
 
 Scene* Engine::GetActiveScene()
 {

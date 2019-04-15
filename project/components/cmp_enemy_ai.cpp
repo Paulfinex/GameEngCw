@@ -1,6 +1,5 @@
 #include "cmp_enemy_ai.h"
 #include "levelsystem.h"
-#include "cmp_ghost.h"
 #include <SFML/Graphics.hpp>
 #include "cmp_physics.h"
 #include "system_physics.h"

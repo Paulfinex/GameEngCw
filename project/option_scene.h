@@ -8,6 +8,7 @@ public:
 	~OptionScene() override = default;
 
 	void Load() override;
+	void UnLoad() override;
 
 	void Update(const double& dt) override;
 
@@ -22,6 +23,9 @@ private:
 	std::shared_ptr<Entity> _buttonInputDig;
 	std::shared_ptr<Entity> _buttonBack;
 	std::shared_ptr<Entity> _buttonControlsBack;
+	std::vector<std::string> _resolutions;
+	int _resIndex;
 	float _offSet = 45.0f;
 	double _delay;
+	double _iteratorDelay;
 };

@@ -6,10 +6,10 @@
 #include "system_resources.h"
 #include "engine.h"
 #include "cmp_tile.h"
+#include "cmp_player_movement.h"
 
 using namespace sf;
 using namespace std;
-
 
 TreasureComponent::TreasureComponent(Entity* t)
 	: Component(t)
@@ -19,38 +19,37 @@ TreasureComponent::TreasureComponent(Entity* t)
 void TreasureComponent::update(double dt) {
 
 	auto touching = _parent->get_components<PhysicsComponent>()[0]->getTouching();
-
+	
 	if (touching.size() > 0)
 	{
-
-		if (_looted)
-		{
-			_parent->setForDelete();
-		}
-
+		auto _players = Engine::GetActiveScene()->ents.find("player");
 		for (auto &t : touching)
 		{
-			auto _player = Engine::GetActiveScene()->ents.find("player");
-			if (_parent->isAlive())
+			for (auto &p : _players)
 			{
-				for (auto &b : _player)
+				if (_parent->isAlive())
 				{
-					if (t->GetFixtureA() == b->get_components<PhysicsComponent>()[0]->getFixture())
+					if (t->GetFixtureA() == p->get_components<PhysicsComponent>()[0]->getFixture() ||
+						t->GetFixtureB() == p->get_components<PhysicsComponent>()[0]->getFixture())
 					{
-						PlayerLoot();
+						if (delay > 0) { delay -= dt; }
+
+						if (delay <= 0)
+						{
+							PlayerLoot();
+							p->get_components<PlayerMovementComponent>()[0]->_setHasTreasure(true);
+						}
 					}
 				}
-			}
+			} 
 		}
+		_players.clear();
 	}
-}
-
-void TreasureComponent::Spawn()
-{
 }
 
 void TreasureComponent::PlayerLoot()
 {
-	_looted = true;
+	delay = 0.5f;
+	_parent->setForDelete();
 }
 

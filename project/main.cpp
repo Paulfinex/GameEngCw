@@ -4,8 +4,6 @@
 #include "engine.h"
 #include "game.h"
 
-
-
 using namespace sf;
 using namespace std;
 

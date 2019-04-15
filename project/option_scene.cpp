@@ -17,23 +17,48 @@
 using namespace std;
 using namespace sf;
 
+bool iteratorCheck = false;
+
+
 void OptionScene::Load()
 {
 	_delay = 0.1f;
+	_iteratorDelay = 0.1f;
+	_resIndex = 0;
+
+	for (_resIndex = 0; _resIndex < _resolutions.size(); _resIndex++)
+	{
+		if (_resolutions[_resIndex] == Engine::CurrRes())
+		{
+			break;
+		}
+	}
+
+	_resolutions = 
+	{
+		("1920x1080"),
+		("1920x1200"),
+		("1680x1050"),
+		("1440x900"),
+		("1366x768"),
+		("1280x800"),
+		("800x600"),
+		("640x480")
+	};
 
 	make_logo("main_menu.png");
 
-	_buttonResolution = make_button("Resolution");
-	_buttonResolution->setPosition({ (float)Engine::GetWindow().getSize().x / 2,(float)Engine::GetWindow().getSize().y / 2 + _offSet});
+	_buttonResolution = make_button("Resolution - " + Engine::CurrRes());
+	_buttonResolution->setPosition({ Engine::GetWindow().getView().getSize().x / 2, Engine::GetWindow().getView().getSize().y / 2 + _offSet});
 
 	_buttonWindowedMode = make_button("Windowed Mode");
-	_buttonWindowedMode->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonResolution->getPosition().y + _offSet });
+	_buttonWindowedMode->setPosition({ _buttonResolution->getPosition().x, _buttonResolution->getPosition().y + _offSet });
 
 	_buttonChangeInput = make_button("Controls");
-	_buttonChangeInput->setPosition({ (float)Engine::GetWindow().getSize().x / 2,  _buttonWindowedMode->getPosition().y + _offSet });
+	_buttonChangeInput->setPosition({ _buttonResolution->getPosition().x,  _buttonWindowedMode->getPosition().y + _offSet });
 
 	_buttonBack = make_button("Back");
-	_buttonBack->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonChangeInput->getPosition().y + _offSet });
+	_buttonBack->setPosition({ _buttonResolution->getPosition().x, _buttonChangeInput->getPosition().y + _offSet });
 
 	_buttonInputUp = make_button("Move Up");
 	_buttonInputUp->setPosition({ _buttonChangeInput->getPosition().x + 351.0f,  _buttonChangeInput->getPosition().y });
@@ -58,29 +83,41 @@ void OptionScene::Load()
 	_buttonControlsBack = make_button("Back");
 	_buttonControlsBack->setPosition({ _buttonInputUp->getPosition().x,  _buttonInputDig->getPosition().y + _offSet });
 	_buttonControlsBack->setVisible(false);
-
-	Engine::GetWindow().setView(Engine::GetWindow().getDefaultView());
-
 	setLoaded(true);
 }
 
 void OptionScene::Update(const double& dt)
 {
-	if (_delay > 0)
-	{
-		_delay -= dt;
-	}
+	if (_delay > 0){_delay -= dt;}
+	if (_iteratorDelay > 0) { _iteratorDelay -= dt; }
 
 	auto mousePos = Engine::GetWindow().mapPixelToCoords(Mouse::getPosition(Engine::GetWindow()));
 	
 	if (_delay <= 0)
 	{
 		_delay = 0.1f;
+		
 		// Check buttons if selected
 		{
-			if (ButtonHandling(_buttonResolution, mousePos))
+			if(IsSelected(_buttonResolution, mousePos))
 			{
+					if (_resIndex < _resolutions.size()-1 && Keyboard::isKeyPressed(Keyboard::Right) && _iteratorDelay <= 0)
+					{
+						_iteratorDelay = 0.1f;
+						_resIndex++;
+						_buttonResolution->GetCompatibleComponent<TextComponent>()[0]->SetText("Resolution - " + _resolutions[_resIndex]);
+					}
+					else if ((_resIndex > 0) && Keyboard::isKeyPressed(Keyboard::Left) && _iteratorDelay <= 0)
+					{
+						_iteratorDelay = 0.1f;
+						_resIndex--;
+						_buttonResolution->GetCompatibleComponent<TextComponent>()[0]->SetText("Resolution - " + _resolutions[_resIndex]);
+					}
 
+					if (Mouse::isButtonPressed(Mouse::Left))
+					{
+						Engine::ChangeResolution(_resolutions[_resIndex]);
+					}
 			}
 
 			if (ButtonHandling(_buttonWindowedMode, mousePos))
@@ -144,4 +181,8 @@ void OptionScene::Update(const double& dt)
 	}
 
 	Scene::Update(dt);
+}
+void OptionScene::UnLoad()
+{
+	Scene::UnLoad();
 }

@@ -22,6 +22,16 @@ PlayerMovementComponent::PlayerMovementComponent(Entity* p)
 	miningDirection = { 1.0f, 0.0f };
 }
 
+void PlayerMovementComponent::_setHasTreasure(bool hasTreasure) 
+{
+	PlayerMovementComponent::_hasTreasure = hasTreasure;
+}
+
+bool PlayerMovementComponent::HasTreasure()
+{
+	return _hasTreasure;
+}
+
 void PlayerMovementComponent::update(double dt) {
 
 	auto speed = _groundspeed;

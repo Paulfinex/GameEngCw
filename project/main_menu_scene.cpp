@@ -23,7 +23,7 @@ void MainMenuScene::Load()
 	make_logo("main_menu.png");
 	// Button single player scene
 	_buttonSinglePlayer =  make_button("Singleplayer");
-	_buttonSinglePlayer->setPosition({ (float)Engine::GetWindow().getSize().x / 2,(float)Engine::GetWindow().getSize().y / 2 + offSet});
+	_buttonSinglePlayer->setPosition({Engine::GetWindow().getView().getSize().x / 2,Engine::GetWindow().getView().getSize().y / 2 + offSet});
 	
 	/*
 	_buttonMultiPlayer = make_button("Multiplayer - TBA");
@@ -31,15 +31,12 @@ void MainMenuScene::Load()
 	*/
 
 	_buttonOptions = make_button("Options");
-	_buttonOptions->setPosition({ (float)Engine::GetWindow().getSize().x / 2,  _buttonSinglePlayer->getPosition().y + offSet });
+	_buttonOptions->setPosition({ _buttonSinglePlayer->getPosition().x,  _buttonSinglePlayer->getPosition().y + offSet });
 
 	_buttonQuit = make_button("Exit Game");
-	_buttonQuit->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonOptions->getPosition().y + offSet });
-
-	Engine::GetWindow().setView(Engine::GetWindow().getDefaultView());
+	_buttonQuit->setPosition({ _buttonSinglePlayer->getPosition().x, _buttonOptions->getPosition().y + offSet });
 
 	setLoaded(true);
-
 }
 
 void MainMenuScene::Update(const double& dt) 
@@ -81,7 +78,10 @@ void MainMenuScene::Update(const double& dt)
 
 	Scene::Update(dt); 
 }
-
+void MainMenuScene::UnLoad()
+{
+	Scene::UnLoad();
+}
 
 
 

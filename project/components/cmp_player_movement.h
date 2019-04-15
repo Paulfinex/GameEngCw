@@ -16,6 +16,9 @@ public:
 	float _groundspeed;
 	sf::Vector2f miningDirection;
 	sf::Vector2f getMiningDirection();
+	bool _hasTreasure = false;
+	void _setHasTreasure(bool);
+	bool PlayerMovementComponent::HasTreasure();
 	void PlayerMovementComponent::setCanMove(bool m);
 	void PlayerMovementComponent::DigIT();
 

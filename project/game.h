@@ -8,8 +8,6 @@
 #include "game_over.h"
 #include "win_screen.h"
 
-
-
 static uint16_t game_width = 1920;
 static uint16_t game_heigth = 1080;
 

@@ -2,7 +2,7 @@
 #include "engine.h"
 #include "cmp_sprite.h"
 #include "system_resources.h"
-
+#include "../prefabs_manager.h"
 
 void TileComponent::update(double dt)
 {
@@ -10,10 +10,18 @@ void TileComponent::update(double dt)
 
     if(_health <= 0)
 	{
-
+		if (TileComponent::has_treasure)
+		{
+			make_treasure(_parent->getPosition());
+		}
+		has_treasure = false;
 		_parent->setForDelete();
-
 	}
+}
+
+void TileComponent::SetTreasure() 
+{
+	TileComponent::has_treasure = true;
 }
 
 TileComponent::TileComponent(Entity * p) :Component(p)

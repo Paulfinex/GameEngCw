@@ -6,7 +6,7 @@ class MainMenuScene : public Scene {
 public:
 	MainMenuScene() = default;
 	~MainMenuScene() override = default;
-
+	void UnLoad() override;
 	void Load() override;
 
 	void Update(const double& dt) override;
