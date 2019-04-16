@@ -18,14 +18,17 @@
 #include "game.h"
 #include "components/cmp_text.h"
 #include <cmath> 
+#include "enemy_spawner.h"
+#include <random>
 
 using namespace std;
 using namespace sf;
 
-double delay = 0.2f;
+std::vector<std::shared_ptr<Entity>> SinglePlayerScene::_ghosts;
+int index = 0;
 
 void SinglePlayerScene::Load() {
-
+	srand((unsigned)time(0));
 	Engine::GetActiveScene()->ents.list.clear();
 	Engine::GetWindow().setMouseCursorVisible(false);
 	ls::loadLevelFile("res/maps/map1.txt", 60);
@@ -35,8 +38,8 @@ void SinglePlayerScene::Load() {
 	_player = make_player();
 
 	//Create Ghost
-	_ghost.reset();
-	_ghost = make_ghost(1.2f);
+	_ghosts.clear();
+	_ghosts.push_back(make_ghost(1.2f, ls::getTilePosition(ls::findTiles(ls::ENEMY)[0])));
 
 	// Add Physics to Walls
 	make_walls();
@@ -60,46 +63,64 @@ void SinglePlayerScene::Load() {
 	setLoaded(true);
 }
 
+void SinglePlayerScene::AddGhost(std::shared_ptr<Entity> ghost)
+{
+	if (_ghosts.size() <= 15) {
+		_ghosts.push_back(ghost);
+	}
+}
+
 void SinglePlayerScene::Update(const double& dt) {
 
 	_buttonTimer->GetCompatibleComponent<TextComponent>()[0]->SetText(to_string(winTimer));
-	if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->getState() == EnemyAIComponent::CHASING)
-	{
-		auto char_relative = (Vector2i)_ghost->getPosition() - Vector2i(ls::getOffset());
-		auto char_tile = Vector2i(char_relative / (int)ls::getTileSize());
-		auto player_relative = _player->getPosition() - ls::getOffset();
-		auto player_tile = Vector2i(player_relative / ls::getTileSize());
-		auto path = pathFind(char_tile, player_tile);
-		_ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
-	}
-	else if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->getState() == EnemyAIComponent::KILLING)
-	{
-		if (delay > 0) { delay -= dt; }
 
-		if (delay <= 0)
+	for (auto _ghost : _ghosts)
+	{
+		if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->getState() == EnemyAIComponent::CHASING)
 		{
-			delay = 0.2f;
+			auto char_relative = (Vector2i)_ghost->getPosition() - Vector2i(ls::getOffset());
+			auto char_tile = Vector2i(char_relative / (int)ls::getTileSize());
+			auto player_relative = _player->getPosition() - ls::getOffset();
+			auto player_tile = Vector2i(player_relative / ls::getTileSize());
+			auto path = pathFind(char_tile, player_tile);
+			_ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
+		}
+		else if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->getState() == EnemyAIComponent::KILLING)
+		{
 			_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->_setHasTreasure(false);
+			winTimer = 20.f;
+			//set_counter(0);
 			Engine::ChangeScene(&gameOverScreen);
+			break;
 		}
 	}
-
+	
 	if (_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->HasTreasure())
 	{
 		if (winTimer > 0) { winTimer -= dt;}
 
+		if (_delay > 0) { _delay -= dt; }
+
+		if(_delay <= 0)
+		{ 
+			if (_spawnTimer % 2 == 0 && _ghosts.size() <= 15)
+			{
+				index = rand() % 26;
+				_ghosts.push_back(make_ghost(1.2f, ls::getTilePosition(ls::findTiles(ls::FINALSPAWN)[index])
+					+ Vector2f(ls::getTileSize() / 2, ls::getTileSize() / 2)));
+			}
+			_spawnTimer++; 
+			_delay = 1.0f;
+		}
+
 		if (winTimer <= 0)
 		{
-			if (delay > 0) { delay -= dt; }
-
-			if (delay <= 0)
-			{
-				_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->_setHasTreasure(false);
-				Engine::ChangeScene(&winScreen);
-			}
+			_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->_setHasTreasure(false);
+			winTimer = 20.f;
+			set_counter(0);
+			Engine::ChangeScene(&winScreen);
 		}
 	}
-
 	Scene::Update(dt);
 }
 

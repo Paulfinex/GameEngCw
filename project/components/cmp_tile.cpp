@@ -3,6 +3,7 @@
 #include "cmp_sprite.h"
 #include "system_resources.h"
 #include "../prefabs_manager.h"
+#include "../enemy_spawner.h"
 
 void TileComponent::update(double dt)
 {
@@ -14,9 +15,19 @@ void TileComponent::update(double dt)
 		{
 			make_treasure(_parent->getPosition());
 		}
+
 		has_treasure = false;
+
+		spawn_ghost();
+
 		_parent->setForDelete();
 	}
+}
+
+void TileComponent::spawn_ghost()
+{
+	add_to_counter();
+	create_new_ghost(_parent->getPosition());
 }
 
 void TileComponent::SetTreasure() 
@@ -53,4 +64,3 @@ int TileComponent::getHealth()
 {
 	return _health;
 }
-

@@ -1,18 +1,18 @@
 wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-w s         t                  w
+w+s   +   +         +   +     +w
 wbwwwwwbbbbwbbbbbbbwbbbbwwwwwwbw
-wbw   bbbbbbb     bbbb       wbw
-wbwbwwbwwwbw       wbwwwwbwwbwbw
-wbw  w   wbw       wbw       wbw
-wbb  b   wbw       wbw    b  bbw
-wb    b wwbw       wbww       bw
-w    wb bbbw   n   wbbb   b    w
-w   bb  wwww  bbb  wwww       ww
-w    w     bbbbbbbbb  b     b  w
-w     b    w  bbb  w     w    ww
+wbw + bbbbbbb     bbbb       wbw
+wbwbwwbwwwbw  + +  wbwwwwbwwbwbw
+wbw+ w   wbw       wbw    +  wbw
+wbb  b   wbw   +   wbw    b  bbw
+wb    b wwbw   +   wbww       bw
+w +  wb bbbw   n   wbbb   b +  w
+w   bb  wwww  bwb  wwww  +    ww
+w    w     bbwwwwwbb  b     b  w
+w  +  b +  w  bwb  w  +  w    ww
 w w        w       w    b   w ww
-w w    w   w       w  w     w ww
+w w +  w   w   +   w  w  +  w ww
 w wbbbbbbbbbbbbwwbbbbbbbbbbbw ww
-w wwww                   wwww ww
-w     b   b    b    b   b     ww
+w wwww    +    +    +    wwww ww
+w +   b   b    b    b   b    +ww
 wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
