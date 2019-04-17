@@ -16,7 +16,7 @@
 #include "components/cmp_text.h"
 #include "components/cmp_pickaxe.h"
 #include "components/cmp_treasure.h"
-
+#include "sound.h"
 using namespace std;
 using namespace sf;
 
@@ -139,12 +139,12 @@ void make_breakable_walls()
 		e->setPosition(ls::getTilePosition(w) + Vector2f(ls::getTileSize() / 2, ls::getTileSize() / 2));
 		e->addComponent<PhysicsComponent>(false, Vector2f(ls::getTileSize(), ls::getTileSize()));
 
-		auto s = e->addComponent<SpriteComponent>();
+		auto t = e->addComponent<SpriteComponent>();
 		auto tex = Resources::get<Texture>("tex.png");
-		s->setTexture(tex);
-		s->getSprite().setTextureRect(sf::IntRect(0, 0, 32, 32));
-		s->getSprite().setScale(1.875f, 1.875f);
-		s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
+		t->setTexture(tex);
+		t->getSprite().setTextureRect(sf::IntRect(0, 0, 32, 32));
+		t->getSprite().setScale(1.875f, 1.875f);
+		t->getSprite().setOrigin(t->getSprite().getLocalBounds().width / 2, t->getSprite().getLocalBounds().height / 2);
 		e->addComponent<TileComponent>();
 		Engine::GetActiveScene()->ents.list.push_back(e);
 

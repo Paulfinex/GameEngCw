@@ -17,6 +17,25 @@ SoundEffects::SoundEffects()
 	treasureLootBuffer.loadFromFile("res/sounds/treasure.wav");
 	treasureSpawnBuffer.loadFromFile("res/sounds/treasure_spawn.wav");
 	chasingBuffer.loadFromFile("res/sounds/chasing.wav");
+	ghostSpawnBuffer.loadFromFile("res/sounds/ghost_spawn.wav");
+	defeatBuffer.loadFromFile("res/sounds/defeat.wav");
+}
+void SoundEffects::stop_all()
+{
+	timerSound.setLoop(false);
+	chasingSound.setLoop(false);
+}
+void SoundEffects::play_defeat()
+{
+	defeatSound.setVolume(volume);
+	defeatSound.setBuffer(defeatBuffer);
+	defeatSound.play();
+}
+void SoundEffects::play_ghost_spawn()
+{
+	ghostSpawnSound.setVolume(volume);
+	ghostSpawnSound.setBuffer(ghostSpawnBuffer);
+	ghostSpawnSound.play();
 }
 void SoundEffects::play_chasing()
 {
@@ -59,6 +78,9 @@ void SoundEffects::play_treasure_loot()
 }
 void SoundEffects::play_trasure_spawn()
 {
+	treasureSpawnSound.setVolume(volume);
+	treasureSpawnSound.setBuffer(treasureSpawnBuffer);
+	treasureSpawnSound.play();
 }
 void SoundEffects::play_tick()
 {

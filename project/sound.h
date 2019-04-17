@@ -29,9 +29,15 @@ private:
 	sf::Sound defeatSound;
 	sf::SoundBuffer victoryBuffer;
 	sf::Sound victorySound;
+	sf::SoundBuffer ghostSpawnBuffer;
+	sf::Sound ghostSpawnSound;
+
 	double volume = 50.f;
 public:
 	SoundEffects();
+	void stop_all();
+	void play_defeat();
+	void play_ghost_spawn();
 	void play_chasing();
 	void stop_chasing();
 	void play_timer();

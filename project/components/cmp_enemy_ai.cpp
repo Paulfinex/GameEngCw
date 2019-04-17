@@ -12,7 +12,6 @@
 using namespace sf;
 using namespace std;
 extern SoundEffects s;
-bool soundCheck = true;
 EnemyAIComponent::EnemyAIComponent(Entity* p) :Component(p) {
 	_state = DORMANT;
 

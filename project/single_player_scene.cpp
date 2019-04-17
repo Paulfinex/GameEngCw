@@ -27,7 +27,8 @@ using namespace sf;
 
 double delay = 0.2f;
 extern SoundEffects s;
-
+bool timerSoundCheck = true;
+bool treasureSoundCheck = true;
 std::vector<std::shared_ptr<Entity>> SinglePlayerScene::_ghosts;
 int index = 0;
 
@@ -101,7 +102,16 @@ void SinglePlayerScene::Update(const double& dt) {
 
 	if (_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->HasTreasure())
 	{
-		s.play_timer();
+		if (timerSoundCheck)
+		{
+			timerSoundCheck = false;
+			s.play_timer();
+		}
+		if (treasureSoundCheck)
+		{
+			treasureSoundCheck = false;
+			s.play_trasure_spawn();
+		}
 		if (winTimer > 0) { winTimer -= dt;}
 
 		if (_delay > 0) { _delay -= dt; }

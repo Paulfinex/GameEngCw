@@ -7,7 +7,10 @@ private:
 	float _groundspeed = 100;
 	sf::Vector2f _direction;
 	double _delayActivation = 5.f;
+
 public:
+
+	bool soundCheck = true;
 	enum state { DORMANT, CHASING, KILLING };
 	state _state;
 	enum facing { LEFT, RIGHT, UP, DOWN };
