@@ -8,6 +8,7 @@
 #include "cmp_tile.h"
 #include "../prefabs_manager.h"
 #include "cmp_treasure.h"
+#include "../inputs.h"
 
 
 using namespace sf;
@@ -47,22 +48,22 @@ void PlayerMovementComponent::update(double dt) {
 	}
 	else 
 	{
-		if (Keyboard::isKeyPressed(Keyboard::Left)) {
+		if (Keyboard::isKeyPressed(Inputs::GetKeyboardKeyCode("Left"))) {
 			direction.x--;
 			_facing = LEFT;
 			miningDirection = { -1.0f, 0.0f };
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Right)) {
+		if (Keyboard::isKeyPressed(Inputs::GetKeyboardKeyCode("Right"))) {
 			direction.x++;
 			_facing = RIGHT;
 			miningDirection = { 1.0f, 0.0f };
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Up)) {
+		if (Keyboard::isKeyPressed(Inputs::GetKeyboardKeyCode("Up"))) {
 			direction.y++;
 			_facing = UP;
 			miningDirection = { 0.0f, 1.0f };
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Down)) {
+		if (Keyboard::isKeyPressed(Inputs::GetKeyboardKeyCode("Down"))) {
 			direction.y--;
 			_facing = DOWN;
 			miningDirection = { 0.0f, -1.0f };
@@ -78,7 +79,7 @@ void PlayerMovementComponent::update(double dt) {
 
 	if (miningColdDown <= 0)
 	{
-		if (Keyboard::isKeyPressed(Keyboard::Z) || Joystick::isButtonPressed(0, 0))
+		if (Keyboard::isKeyPressed(Inputs::GetKeyboardKeyCode("Dig")) || Joystick::isButtonPressed(0, 0))
 		{
 			DigIT();
 		}
