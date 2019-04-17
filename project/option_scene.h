@@ -6,13 +6,15 @@ class OptionScene : public Scene {
 public:
 	OptionScene() = default;
 	~OptionScene() override = default;
-
+	int volumeLevel = 50;
 	void Load() override;
 	void UnLoad() override;
 
 	void Update(const double& dt) override;
 
 private:
+
+	std::shared_ptr<Entity> _buttonVolume;
 	std::shared_ptr<Entity> _buttonResolution;
 	std::shared_ptr<Entity> _buttonWindowedMode;
 	std::shared_ptr<Entity> _buttonChangeInput;

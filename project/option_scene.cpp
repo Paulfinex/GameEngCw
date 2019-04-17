@@ -12,6 +12,8 @@
 #include "inputs.h"
 #include <string>
 #include <locale> 
+#include "sound.h"
+extern SoundEffects s;
 
 using namespace std;
 using namespace sf;
@@ -56,8 +58,11 @@ void OptionScene::Load()
 	_buttonChangeInput = make_button("Controls");
 	_buttonChangeInput->setPosition({ _buttonResolution->getPosition().x,  _buttonWindowedMode->getPosition().y + _offSet });
 
+	_buttonVolume = make_button("Volume: " + to_string(volumeLevel));
+	_buttonVolume->setPosition({ _buttonResolution->getPosition().x,  _buttonChangeInput->getPosition().y + _offSet });
+
 	_buttonBack = make_button("Back");
-	_buttonBack->setPosition({ _buttonResolution->getPosition().x, _buttonChangeInput->getPosition().y + _offSet });
+	_buttonBack->setPosition({ _buttonResolution->getPosition().x, _buttonVolume->getPosition().y + _offSet });
 
 	_buttonInputUp = make_button("Move Up - UP");
 	_buttonInputUp->setPosition({ _buttonChangeInput->getPosition().x + 351.0f,  _buttonChangeInput->getPosition().y });
@@ -117,6 +122,28 @@ void OptionScene::Update(const double& dt)
 			}
 		}
 
+		if (IsSelected(_buttonVolume, mousePos))
+		{
+			if (volumeLevel < 100 && Keyboard::isKeyPressed(Keyboard::Right) && _iteratorDelay <= 0)
+			{
+				_iteratorDelay = 0.1f;
+				volumeLevel+=5;
+				_buttonVolume->GetCompatibleComponent<TextComponent>()[0]->SetText("Volume: " +to_string(volumeLevel));
+				s.setVolume(volumeLevel);
+			}
+			else if ((volumeLevel > 0) && Keyboard::isKeyPressed(Keyboard::Left) && _iteratorDelay <= 0)
+			{
+				_iteratorDelay = 0.1f;
+				volumeLevel -= 5;
+				_buttonVolume->GetCompatibleComponent<TextComponent>()[0]->SetText("Volume: " + to_string(volumeLevel));
+				s.setVolume(volumeLevel);
+			}
+
+			if (Mouse::isButtonPressed(Mouse::Left))
+			{
+				Engine::ChangeResolution(_resolutions[_resIndex]);
+			}
+		}
 		if (ButtonHandling(_buttonWindowedMode, mousePos))
 		{
 				Engine::setWindowedMode();

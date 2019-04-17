@@ -52,5 +52,6 @@ public:
 	void play_pickaxe_hit();
 	void play_ghost_detection();
 	void play_victory();
+	void setVolume(int level);
 };
 

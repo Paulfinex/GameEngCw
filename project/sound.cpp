@@ -127,4 +127,9 @@ void SoundEffects::play_victory()
 	victorySound.play();
 }
 
+void SoundEffects::setVolume(int level)
+{
+	volume = level;
+}
+
 
