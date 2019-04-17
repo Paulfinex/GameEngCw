@@ -14,6 +14,7 @@ public:
 private:
 	std::shared_ptr<Entity> _buttonSinglePlayer;
 	std::shared_ptr<Entity> _buttonMultiPlayer;
+	std::shared_ptr<Entity> _buttonTutorial;
 	std::shared_ptr<Entity> _buttonOptions;
 	std::shared_ptr<Entity> _buttonQuit;
 	double _delay;

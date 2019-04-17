@@ -10,6 +10,7 @@ using namespace std;
 
 MainMenuScene mainMenu;
 SinglePlayerScene singlePlayer;
+TutorialScene tutorial;
 //MultiplayerScene multiPlayer;
 OptionScene optionMenu;
 VictoryScene winScreen;

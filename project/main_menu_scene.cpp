@@ -32,8 +32,11 @@ void MainMenuScene::Load()
 	_buttonMultiPlayer->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonSinglePlayer->getPosition().y + offSet });
 	*/
 
+	_buttonTutorial = make_button("Tutorial");
+	_buttonTutorial->setPosition({ _buttonSinglePlayer->getPosition().x,  _buttonSinglePlayer->getPosition().y + offSet });
+
 	_buttonOptions = make_button("Options");
-	_buttonOptions->setPosition({ _buttonSinglePlayer->getPosition().x,  _buttonSinglePlayer->getPosition().y + offSet });
+	_buttonOptions->setPosition({ _buttonSinglePlayer->getPosition().x,  _buttonTutorial->getPosition().y + offSet });
 
 	_buttonQuit = make_button("Exit Game");
 	_buttonQuit->setPosition({ _buttonSinglePlayer->getPosition().x, _buttonOptions->getPosition().y + offSet });
@@ -58,6 +61,10 @@ void MainMenuScene::Update(const double& dt)
 			if (ButtonHandling(_buttonSinglePlayer, mousePos))
 			{
 				Engine::ChangeScene(&singlePlayer);
+			}
+			if (ButtonHandling(_buttonTutorial, mousePos))
+			{
+				Engine::ChangeScene(&tutorial);
 			}
 
 			/*// TBA multiplayer //
