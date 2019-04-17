@@ -18,6 +18,7 @@ using namespace sf;
 
 void VictoryScene::Load()
 {
+	s.stop_all();
 	s.play_victory();
 	_delay = 0.3f;
 	// Load Logo
