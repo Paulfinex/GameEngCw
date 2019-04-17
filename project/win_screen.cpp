@@ -11,12 +11,14 @@
 #include "game.h"
 #include "prefabs_manager.h"
 #include "buttons_manager.h"
-
+#include "sound.h"
+extern SoundEffects s;
 using namespace std;
 using namespace sf;
 
 void VictoryScene::Load()
 {
+	s.play_victory();
 	_delay = 0.3f;
 	// Load Logo
 	make_logo("win_screen.png");

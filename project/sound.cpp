@@ -19,6 +19,7 @@ SoundEffects::SoundEffects()
 	chasingBuffer.loadFromFile("res/sounds/chasing.wav");
 	ghostSpawnBuffer.loadFromFile("res/sounds/ghost_spawn.wav");
 	defeatBuffer.loadFromFile("res/sounds/defeat.wav");
+	victoryBuffer.loadFromFile("res/sounds/victory.wav");
 }
 void SoundEffects::stop_all()
 {
@@ -117,6 +118,13 @@ void SoundEffects::play_ghost_detection()
 	ghostDetSound.setVolume(volume);
 	ghostDetSound.setBuffer(ghostDetBuffer);
 	ghostDetSound.play();
+}
+
+void SoundEffects::play_victory()
+{
+	victorySound.setVolume(volume);
+	victorySound.setBuffer(victoryBuffer);
+	victorySound.play();
 }
 
 
