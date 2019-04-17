@@ -23,10 +23,17 @@ private:
 	sf::Sound grooveMusicSound;
 	sf::SoundBuffer timerBuffer;
 	sf::Sound timerSound;
-
+	sf::SoundBuffer chasingBuffer;
+	sf::Sound chasingSound;
+	sf::SoundBuffer defeatBuffer;
+	sf::Sound defeatSound;
+	sf::SoundBuffer victoryBuffer;
+	sf::Sound victorySound;
 	double volume = 50.f;
 public:
 	SoundEffects();
+	void play_chasing();
+	void stop_chasing();
 	void play_timer();
 	void stop_timer();
 	void play_groove();

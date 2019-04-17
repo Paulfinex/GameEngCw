@@ -15,6 +15,19 @@ SoundEffects::SoundEffects()
 	grooveMusicBuffer.loadFromFile("res/sounds/mainGroove.wav");
 	timerBuffer.loadFromFile("res/sounds/clock.wav");
 	treasureLootBuffer.loadFromFile("res/sounds/treasure.wav");
+	treasureSpawnBuffer.loadFromFile("res/sounds/treasure_spawn.wav");
+	chasingBuffer.loadFromFile("res/sounds/chasing.wav");
+}
+void SoundEffects::play_chasing()
+{
+	chasingSound.setVolume(volume);
+	chasingSound.setBuffer(chasingBuffer);
+	chasingSound.play();
+	chasingSound.setLoop(true);
+}
+void SoundEffects::stop_chasing()
+{
+	chasingSound.setLoop(false);
 }
 void SoundEffects::play_timer()
 {

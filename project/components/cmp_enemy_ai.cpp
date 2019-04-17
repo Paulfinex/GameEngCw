@@ -8,10 +8,11 @@
 #include "engine.h"
 #include "cmp_tile.h"
 #include "../game.h"
-
+#include "../sound.h"
 using namespace sf;
 using namespace std;
-
+extern SoundEffects s;
+bool soundCheck = true;
 EnemyAIComponent::EnemyAIComponent(Entity* p) :Component(p) {
 	_state = DORMANT;
 
@@ -30,8 +31,13 @@ void EnemyAIComponent::update(double dt)
 
 		if (gTopDistance < 250.f)
 		{
+			if (soundCheck)
+			{
+				s.play_chasing();
+				soundCheck = false;
+			}
 			_state = CHASING;
-
+			
 			auto s = _parent->GetCompatibleComponent<SpriteComponent>()[0];
 
 			if (gTopDistance > 100.f)
@@ -50,6 +56,11 @@ void EnemyAIComponent::update(double dt)
 		else
 		{
 			_state = DORMANT;
+			if (!soundCheck)
+			{
+				s.stop_chasing();
+			}
+			soundCheck = true;
 			Vector2f direction = { 0.f,0.f };
 			_parent->GetCompatibleComponent<PhysicsComponent>()[0]->setVelocity(Vector2f(normalize(direction) * speed));
 			_parent->GetCompatibleComponent<SpriteComponent>()[0]->getSprite().setTextureRect(sf::IntRect((32 * 5) + 5, 0, 32, 32));
