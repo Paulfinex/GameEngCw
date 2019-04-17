@@ -42,6 +42,7 @@ public:
 	const static std::map<std::string, std::pair<int, int>> RESOLUTION;
 	static void Engine::ChangeResolution(std::string);
 	static std::string CurrRes();
+	static std::string lastKeyPressed;
 private:
 	static Scene* _activeScene;
 	static std::string _gameName;

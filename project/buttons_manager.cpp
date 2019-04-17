@@ -28,6 +28,7 @@ bool IsSelected(shared_ptr<Entity> button, Vector2f mousePos)
 		return false;
 	}
 }
+
 bool ButtonHandling(shared_ptr<Entity> button, Vector2f mousePos)
 {
 	return IsSelected(button, mousePos) && Mouse::isButtonPressed(Mouse::Left);

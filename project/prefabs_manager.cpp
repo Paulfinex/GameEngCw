@@ -73,10 +73,10 @@ void make_pickaxe()
 }
 
 //Create Ghost
-std::shared_ptr<Entity> make_ghost(double _delay)
+std::shared_ptr<Entity> make_ghost(double _delay, sf::Vector2f position)
 {
 	auto ghost = Engine::GetActiveScene()->makeEntity();
-	ghost->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]));
+	ghost->setPosition(position);
 	ghost->addTag("ghost");
 	auto s = ghost->addComponent<SpriteComponent>();
 	auto tex = Resources::get<Texture>("tex.png");
@@ -91,12 +91,10 @@ std::shared_ptr<Entity> make_ghost(double _delay)
 	ghost->addComponent<EnemyAIComponent>();
 	
 	// Add PathFinding
-	{
-		auto path = pathFind(sf::Vector2i(1, 1), sf::Vector2i(ls::getWidth() - 2, ls::getHeight() - 2));
-		ghost->addComponent<PathfindingComponent>(_delay);
-		ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
-	}
-
+	auto path = pathFind(sf::Vector2i(1, 1), sf::Vector2i(ls::getWidth() - 2, ls::getHeight() - 2));
+	ghost->addComponent<PathfindingComponent>(_delay);
+	ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
+	
 	Engine::GetActiveScene()->ents.list.push_back(ghost);
 	return ghost;
 }
@@ -131,7 +129,7 @@ void make_breakable_walls()
 	bool treasureSet = false;
 	int index = 0;
 	srand((unsigned)time(0));
-	int indexToMatch = rand() % 111;
+	int indexToMatch = rand() % 104;
 
 	for (auto w : blocks)
 	{

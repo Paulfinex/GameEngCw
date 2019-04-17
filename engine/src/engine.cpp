@@ -14,7 +14,7 @@ using namespace sf;
 using namespace std;
 Scene* Engine::_activeScene = nullptr;
 std::string Engine::_gameName;
-
+std::string Engine::lastKeyPressed = "";
 static bool loading = false;
 static float loadingspinner = 0.f;
 static float loadingTime;
@@ -126,9 +126,19 @@ void Engine::Start(unsigned int width, unsigned int height,
 	while (window.isOpen()) 
 	{
 		Event event;
-		while (window.pollEvent(event)) {
-			if (event.type == Event::Closed) {
+		while (window.pollEvent(event)) 
+		{
+			if (event.type == Event::Closed) 
+			{
 				window.close();
+			}
+
+			if (event.type == sf::Event::TextEntered)
+			{
+				if (event.text.unicode < 0x80) // it's printable
+				{
+					lastKeyPressed = (char)event.text.unicode;
+				}
 			}
 		}
 

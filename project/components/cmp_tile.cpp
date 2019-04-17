@@ -3,8 +3,11 @@
 #include "cmp_sprite.h"
 #include "system_resources.h"
 #include "../prefabs_manager.h"
+#include "../enemy_spawner.h"
 #include "../sound.h"
+
 extern SoundEffects s;
+
 void TileComponent::update(double dt)
 {
 	if (delayDamage > 0) { delayDamage = -dt; }
@@ -15,14 +18,24 @@ void TileComponent::update(double dt)
 		{
 			make_treasure(_parent->getPosition());
 		}
+
 		has_treasure = false;
 
 		s.play_break_block();
+
+		spawn_ghost();
+		
 		_parent->setForDelete();
 	}
 }
 
-void TileComponent::SetTreasure() 
+void TileComponent::spawn_ghost()
+{
+	add_to_counter();
+	create_new_ghost(_parent->getPosition());
+}
+
+void TileComponent::SetTreasure()
 {
 	TileComponent::has_treasure = true;
 }
@@ -56,4 +69,3 @@ int TileComponent::getHealth()
 {
 	return _health;
 }
-

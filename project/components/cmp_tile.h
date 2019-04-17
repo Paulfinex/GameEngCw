@@ -14,4 +14,5 @@ public:
 	void hitHandler();
 	int getHealth();
 	void SetTreasure();
+	void spawn_ghost();
 };

@@ -6,6 +6,7 @@ class EnemyAIComponent : public Component {
 private:
 	float _groundspeed = 100;
 	sf::Vector2f _direction;
+	double _delayActivation = 5.f;
 public:
 	enum state { DORMANT, CHASING, KILLING };
 	state _state;
