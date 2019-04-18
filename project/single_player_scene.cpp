@@ -68,9 +68,10 @@ void SinglePlayerScene::Load() {
 	setLoaded(true);
 }
 
-void SinglePlayerScene::AddGhost(std::shared_ptr<Entity> ghost)
+void SinglePlayerScene::AddGhost(Vector2f position)
 {
 	if (_ghosts.size() <= 5) {
+		auto ghost = make_ghost(1.2f, position);
 		_ghosts.push_back(ghost);
 	}
 }
@@ -94,7 +95,7 @@ void SinglePlayerScene::Update(const double& dt) {
 		{
 			_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->_setHasTreasure(false);
 			winTimer = 20.f;
-			//set_counter(0);
+			set_counter(0);
 			Engine::ChangeScene(&gameOverScreen);
 			break;
 		}
@@ -112,6 +113,7 @@ void SinglePlayerScene::Update(const double& dt) {
 			treasureSoundCheck = false;
 			s.play_trasure_spawn();
 		}
+
 		if (winTimer > 0) { winTimer -= dt;}
 
 		if (_delay > 0) { _delay -= dt; }
@@ -120,13 +122,9 @@ void SinglePlayerScene::Update(const double& dt) {
 		{
 			if (_spawnTimer % 2 == 0 && _ghosts.size() <= 10)
 			{
-				s.stop_timer();
-				_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->_setHasTreasure(false);
-				Engine::ChangeScene(&winScreen);
 				index = rand() % 26;
 				_ghosts.push_back(make_ghost(1.2f, ls::getTilePosition(ls::findTiles(ls::FINALSPAWN)[index])
 					+ Vector2f(ls::getTileSize() / 2, ls::getTileSize() / 2)));
-
 			}
 			_spawnTimer++;
 			_delay = 1.0f;
@@ -134,6 +132,7 @@ void SinglePlayerScene::Update(const double& dt) {
 
 		if (winTimer <= 0)
 		{
+			s.stop_timer();
 			_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->_setHasTreasure(false);
 			winTimer = 20.f;
 			set_counter(0);

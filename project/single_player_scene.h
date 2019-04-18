@@ -15,5 +15,5 @@ public:
 	void Load() override;
 	void UnLoad() override;
 	double winTimer = 20.f;
-	static void SinglePlayerScene::AddGhost(std::shared_ptr<Entity>);
+	static void SinglePlayerScene::AddGhost(sf::Vector2f);
 };

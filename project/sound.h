@@ -32,8 +32,8 @@ private:
 	sf::SoundBuffer ghostSpawnBuffer;
 	sf::Sound ghostSpawnSound;
 
-	double volume = 50.f;
-	double main_theme_volume = 30.0f;
+	double volume = 30.f;
+	double main_theme_volume = 10.0f;
 public:
 	SoundEffects();
 	void stop_all();

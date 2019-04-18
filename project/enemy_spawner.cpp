@@ -7,7 +7,7 @@ void create_new_ghost(sf::Vector2f position)
 	if (_counter == 5)
 	{
 		s.play_ghost_spawn();
-		SinglePlayerScene::AddGhost(make_ghost(1.2f, position));
+		SinglePlayerScene::AddGhost(position);
 	}
 }
 
