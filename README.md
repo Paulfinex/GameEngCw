@@ -1,7 +1,7 @@
 # Dig IT
 ## How to build the project
 
-1. Clone this repository
+1. Clone this repository.
 
 2. Run Git or Git bash on the repo folder: 
   git submodule update --init --recursive
