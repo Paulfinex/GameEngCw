@@ -19,14 +19,18 @@ private:
 	double _delay;
 	double _iteratorDelay;
 	std::shared_ptr<Entity> tutorial_player();
-	bool tutorial_move = true;
-	bool tutorial_walls = true;
-	bool tutorial_treasure = true;
-	bool tutorial_ghost = true;
+	bool tutorial_move = false;
+	bool tutorial_walls = false;
+	bool tutorial_treasure = false;
+	bool tutorial_ghost = false;
 	int phase = 1;
 	void phase1();
+	bool phase_1 = true;
 	void phase2();
+	bool phase_2 = true;
 	void phase3();
+	bool phase_3 = true;
 	void phase4();
+	bool phase_4 = true;
 
 };

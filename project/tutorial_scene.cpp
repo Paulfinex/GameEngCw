@@ -49,6 +49,7 @@ void TutorialScene::Update(const double & dt)
 		phase1();
 		break;
 	case 2:
+		phase2();
 		break;
 	case 3:
 		break;
@@ -66,19 +67,31 @@ void TutorialScene::Update(const double & dt)
 
 void TutorialScene::phase1()
 {
-	if (tutorial_move)
+	if (phase_1)
 	{
 		_player.reset();
 		_player = tutorial_player();
 		_infoText->GetCompatibleComponent<TextComponent>()[0]->SetText("Welcome! This is your character, you can move using directional arrows, try it!");
 
-		tutorial_move = false;
+		phase_1 = false;
+	}
+	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Up)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Left)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		phase++;
 	}
 
 }
 
 void TutorialScene::phase2()
 {
+	if (phase_2)
+	{
+
+		_infoText->GetCompatibleComponent<TextComponent>()[0]->SetText("Congratulations! Next, walls! There are two types of wall, but only one is breakable.\n Use the key Z next to them and find which one can be destroyed!");
+
+		phase_2 = false;
+	}
 }
 
 void TutorialScene::phase3()
