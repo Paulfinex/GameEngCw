@@ -15,6 +15,7 @@
 #include "components/cmp_player_movement.h"
 #include "components/cmp_enemy_ai.h"
 #include "components/cmp_physics.h"
+#include "components/cmp_tile.h"
 extern SoundEffects s;
 
 using namespace std;
@@ -52,6 +53,7 @@ void TutorialScene::Update(const double & dt)
 		phase2();
 		break;
 	case 3:
+		phase3();
 		break;
 	case 4:
 		break;
@@ -87,15 +89,26 @@ void TutorialScene::phase2()
 {
 	if (phase_2)
 	{
-
+		_wall = tutorial_wall();
+		_breakable = tutorial_breakable();
 		_infoText->GetCompatibleComponent<TextComponent>()[0]->SetText("Congratulations! Next, walls! There are two types of wall, but only one is breakable.\n Use the key Z next to them and find which one can be destroyed!");
 
 		phase_2 = false;
+	}
+	if (_breakable->GetCompatibleComponent<TileComponent>()[0]->getHealth() == 0)
+	{
+		phase++;
 	}
 }
 
 void TutorialScene::phase3()
 {
+	if (phase_3)
+	{
+		_infoText->GetCompatibleComponent<TextComponent>()[0]->SetText("Good Job! Breakable blocks have a random chance to drop a treasure, loot it and \n keep it safe for 20 seconds to win the level!");
+
+		phase_3 = false;
+	}
 }
 
 void TutorialScene::phase4()
@@ -139,4 +152,46 @@ std::shared_ptr<Entity> TutorialScene::tutorial_player()
 
 	Engine::GetActiveScene()->ents.list.push_back(player);
 	return player;
+}
+
+std::shared_ptr<Entity> TutorialScene::tutorial_wall()
+{
+	auto e = Engine::GetActiveScene()->makeEntity();
+	e->addTag("wall");
+	float x = Engine::GetWindow().getView().getSize().x / 2-250.f;
+	float y = Engine::GetWindow().getView().getSize().y / 2;
+	Vector2f pos = { x,y };
+	e->setPosition(pos);
+	e->addComponent<PhysicsComponent>(false, Vector2f(100.f, 100.f));
+
+	auto s = e->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("tex.png");
+	s->setTexture(tex);
+	s->getSprite().setTextureRect(sf::IntRect(32 * 9 + 5, 0, 32, 32));
+	s->getSprite().setScale(1.875f, 1.875f);
+	s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
+
+	Engine::GetActiveScene()->ents.list.push_back(e);
+	return e;
+}
+
+std::shared_ptr<Entity> TutorialScene::tutorial_breakable()
+{
+	auto e = Engine::GetActiveScene()->makeEntity();
+	e->addTag("breakable");
+	float x = Engine::GetWindow().getView().getSize().x / 2 + 250.f;
+	float y = Engine::GetWindow().getView().getSize().y / 2;
+	Vector2f pos = { x,y };
+	e->setPosition(pos);
+	e->addComponent<PhysicsComponent>(false, Vector2f(100.f,100.f));
+
+	auto t = e->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("tex.png");
+	t->setTexture(tex);
+	t->getSprite().setTextureRect(sf::IntRect(0, 0, 32, 32));
+	t->getSprite().setScale(1.875f, 1.875f);
+	t->getSprite().setOrigin(t->getSprite().getLocalBounds().width / 2, t->getSprite().getLocalBounds().height / 2);
+	e->addComponent<TileComponent>();
+	Engine::GetActiveScene()->ents.list.push_back(e);
+	return e;
 }

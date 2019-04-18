@@ -15,10 +15,14 @@ private:
 	std::shared_ptr<Entity> _buttonBack;
 	std::shared_ptr<Entity> _infoText;
 	std::shared_ptr<Entity> _player;
+	std::shared_ptr<Entity> _wall;
+	std::shared_ptr<Entity> _breakable;
 	float _offSet = 45.0f;
 	double _delay;
 	double _iteratorDelay;
 	std::shared_ptr<Entity> tutorial_player();
+	std::shared_ptr<Entity> tutorial_wall();
+	std::shared_ptr<Entity> tutorial_breakable();
 	bool tutorial_move = false;
 	bool tutorial_walls = false;
 	bool tutorial_treasure = false;
