@@ -128,8 +128,10 @@ void OptionScene::Update(const double& dt)
 			{
 				_iteratorDelay = 0.1f;
 				volumeLevel+=5;
+				main_theme_volume += 5;
 				_buttonVolume->GetCompatibleComponent<TextComponent>()[0]->SetText("Volume: " +to_string(volumeLevel));
 				s.setVolume(volumeLevel);
+				s.setVolumeMainTheme(main_theme_volume);
 			}
 			else if ((volumeLevel > 0) && Keyboard::isKeyPressed(Keyboard::Left) && _iteratorDelay <= 0)
 			{
@@ -137,6 +139,13 @@ void OptionScene::Update(const double& dt)
 				volumeLevel -= 5;
 				_buttonVolume->GetCompatibleComponent<TextComponent>()[0]->SetText("Volume: " + to_string(volumeLevel));
 				s.setVolume(volumeLevel);
+
+				if (main_theme_volume > 0)
+				{
+					main_theme_volume -= 5;
+				}
+
+				s.setVolumeMainTheme(main_theme_volume);
 			}
 
 			if (Mouse::isButtonPressed(Mouse::Left))

@@ -23,23 +23,25 @@ void MainMenuScene::Load()
 	_delay = 0.3f;
 	// Load Logo
 	make_logo("main_menu.png");
+
+	// Button tutorial scene
+	_buttonTutorial = make_button("Tutorial");
+	_buttonTutorial->setPosition({ Engine::GetWindow().getView().getSize().x / 2, Engine::GetWindow().getView().getSize().y / 2 + offSet });
+	
 	// Button single player scene
 	_buttonSinglePlayer =  make_button("Singleplayer");
-	_buttonSinglePlayer->setPosition({Engine::GetWindow().getView().getSize().x / 2,Engine::GetWindow().getView().getSize().y / 2 + offSet});
+	_buttonSinglePlayer->setPosition({ _buttonTutorial->getPosition().x,  _buttonTutorial->getPosition().y + offSet });
 	
 	/*
 	_buttonMultiPlayer = make_button("Multiplayer - TBA");
 	_buttonMultiPlayer->setPosition({ (float)Engine::GetWindow().getSize().x / 2, _buttonSinglePlayer->getPosition().y + offSet });
 	*/
 
-	_buttonTutorial = make_button("Tutorial");
-	_buttonTutorial->setPosition({ _buttonSinglePlayer->getPosition().x,  _buttonSinglePlayer->getPosition().y + offSet });
-
 	_buttonOptions = make_button("Options");
-	_buttonOptions->setPosition({ _buttonSinglePlayer->getPosition().x,  _buttonTutorial->getPosition().y + offSet });
+	_buttonOptions->setPosition({ _buttonTutorial->getPosition().x,  _buttonSinglePlayer->getPosition().y + offSet });
 
 	_buttonQuit = make_button("Exit Game");
-	_buttonQuit->setPosition({ _buttonSinglePlayer->getPosition().x, _buttonOptions->getPosition().y + offSet });
+	_buttonQuit->setPosition({ _buttonTutorial->getPosition().x, _buttonOptions->getPosition().y + offSet });
 
 	setLoaded(true);
 }

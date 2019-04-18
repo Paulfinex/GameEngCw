@@ -7,6 +7,7 @@ public:
 	OptionScene() = default;
 	~OptionScene() override = default;
 	int volumeLevel = 50;
+	int main_theme_volume = 30;
 	void Load() override;
 	void UnLoad() override;
 

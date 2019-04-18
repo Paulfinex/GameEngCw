@@ -20,6 +20,7 @@
 #include "components/cmp_treasure.h"
 #include "components/cmp_pathfind.h"
 #include "pathfinder.h"
+
 extern SoundEffects s;
 
 using namespace std;
@@ -29,7 +30,6 @@ std::vector<std::shared_ptr<Entity>> TutorialScene::_ghost_list;
 bool timerCheck = true;
 void TutorialScene::Load()
 {
-
 	ls::loadLevelFile("res/maps/map0.txt", 60);
 	_delay = 0.3f;
 	float offSet = 45.0f;
@@ -69,14 +69,14 @@ void TutorialScene::Update(const double & dt)
 		for (auto _ghost : _ghost_list)
 		{
 			
-				auto char_relative = (Vector2i)_ghost->getPosition() - Vector2i(ls::getOffset());
-				auto char_tile = Vector2i(char_relative / (int)ls::getTileSize());
-				auto player_relative = _player->getPosition() - ls::getOffset();
-				auto player_tile = Vector2i(player_relative / ls::getTileSize());
-				auto path = pathFind(char_tile, player_tile);
-				_ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
+			auto char_relative = (Vector2i)_ghost->getPosition() - Vector2i(ls::getOffset());
+			auto char_tile = Vector2i(char_relative / (int)ls::getTileSize());
+			auto player_relative = _player->getPosition() - ls::getOffset();
+			auto player_tile = Vector2i(player_relative / ls::getTileSize());
+			auto path = pathFind(char_tile, player_tile);
+			_ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
 			
-			 if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->getState() == EnemyAIComponent::KILLING)
+		    if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->getState() == EnemyAIComponent::KILLING)
 			{
 				Engine::ChangeScene(&gameOverScreen);
 				break;
@@ -90,9 +90,6 @@ void TutorialScene::Update(const double & dt)
 	Scene::Update(dt);
 }
 
-
-
-
 void TutorialScene::phase1()
 {
 	if (phase_1)
@@ -104,7 +101,8 @@ void TutorialScene::phase1()
 		phase_1 = false;
 	}
 	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Up)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Left)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Up)|| 
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Left)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
 		phase++;
 	}
@@ -115,13 +113,15 @@ void TutorialScene::phase2()
 {
 	if (phase_2)
 	{
-		_wall = tutorial_wall();
-		_breakable = tutorial_breakable();
+		tutorial_wall();
+		tutorial_breakable();
 		_infoText->GetCompatibleComponent<TextComponent>()[0]->SetText("Congratulations! Next, walls! There are two types of wall, but only one is breakable.\n Use the key Z next to them and find which one can be destroyed!");
-
 		phase_2 = false;
 	}
-	if (_breakable->GetCompatibleComponent<TileComponent>()[0]->getHealth() == 0)
+
+	auto block = Engine::GetActiveScene()->ents.find("breakable")[0];
+
+	if (block->GetCompatibleComponent<TileComponent>()[0]->getHealth() == 0)
 	{
 		phase++;
 	}
@@ -132,7 +132,6 @@ void TutorialScene::phase3()
 	if (phase_3)
 	{
 		_infoText->GetCompatibleComponent<TextComponent>()[0]->SetText("Good Job! Breakable blocks have a random chance to drop a treasure, loot it and \n keep it safe for 20 seconds to win the level!");
-		tutorial_treasure();
 		phase_3 = false;
 	}
 	if (_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->HasTreasure())
@@ -152,15 +151,13 @@ void TutorialScene::phase4(const double& dt)
 	}
 	
 	if (timerCheck)
-		{
+	{
 			timerCheck = false;
 			s.play_timer();
-		}
-	if (timer > 0) { timer -= dt; _infoText->GetCompatibleComponent<TextComponent>()[0]->SetText("A ghost has spawned to protect the treasure! RUN!\n Timer: " + to_string(timer));
 	}
 
+	if (timer > 0) { timer -= dt; _infoText->GetCompatibleComponent<TextComponent>()[0]->SetText("A ghost has spawned to protect the treasure! RUN!\n Timer: " + to_string(timer));}
 
-	
 	if (timer <= 0)
 	{
 		s.stop_timer();
@@ -180,11 +177,8 @@ void TutorialScene::Render()
 	Scene::Render();
 }
 
-
-
 std::shared_ptr<Entity> TutorialScene::tutorial_player()
 {
-
 	auto player = Engine::GetActiveScene()->makeEntity();
 	float x = Engine::GetWindow().getView().getSize().x / 2;
 	float y = Engine::GetWindow().getView().getSize().y / 2;
@@ -207,63 +201,14 @@ std::shared_ptr<Entity> TutorialScene::tutorial_player()
 	return player;
 }
 
-std::shared_ptr<Entity> TutorialScene::tutorial_wall()
+void TutorialScene::tutorial_wall()
 {
-	auto e = Engine::GetActiveScene()->makeEntity();
-	e->addTag("wall");
-	float x = Engine::GetWindow().getView().getSize().x / 2-250.f;
-	float y = Engine::GetWindow().getView().getSize().y / 2;
-	Vector2f pos = { x,y };
-	e->setPosition(pos);
-	e->addComponent<PhysicsComponent>(false, Vector2f(100.f, 100.f));
-
-	auto s = e->addComponent<SpriteComponent>();
-	auto tex = Resources::get<Texture>("tex.png");
-	s->setTexture(tex);
-	s->getSprite().setTextureRect(sf::IntRect(32 * 9 + 5, 0, 32, 32));
-	s->getSprite().setScale(1.875f, 1.875f);
-	s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
-
-	Engine::GetActiveScene()->ents.list.push_back(e);
-	return e;
+	make_walls();
 }
 
-std::shared_ptr<Entity> TutorialScene::tutorial_breakable()
+void TutorialScene::tutorial_breakable()
 {
-	auto e = Engine::GetActiveScene()->makeEntity();
-	e->addTag("breakable");
-	float x = Engine::GetWindow().getView().getSize().x / 2 + 250.f;
-	float y = Engine::GetWindow().getView().getSize().y / 2;
-	Vector2f pos = { x,y };
-	e->setPosition(pos);
-	e->addComponent<PhysicsComponent>(false, Vector2f(100.f,100.f));
-
-	auto t = e->addComponent<SpriteComponent>();
-	auto tex = Resources::get<Texture>("tex.png");
-	t->setTexture(tex);
-	t->getSprite().setTextureRect(sf::IntRect(0, 0, 32, 32));
-	t->getSprite().setScale(1.875f, 1.875f);
-	t->getSprite().setOrigin(t->getSprite().getLocalBounds().width / 2, t->getSprite().getLocalBounds().height / 2);
-	e->addComponent<TileComponent>();
-	Engine::GetActiveScene()->ents.list.push_back(e);
-	return e;
-}
-
-std::shared_ptr<Entity> TutorialScene::tutorial_treasure()
-{
-	auto e = Engine::GetActiveScene()->makeEntity();
-	e->addTag("treasure");
-	float x = Engine::GetWindow().getView().getSize().x / 2 + 250.f;
-	float y = Engine::GetWindow().getView().getSize().y / 2;
-	Vector2f pos = { x,y };
-	e->setPosition(pos);
-	auto s = e->addComponent<SpriteComponent>();
-	auto tex = Resources::get<Texture>("treasure.png");
-	s->setTexture(tex);
-	s->getSprite().setScale(2.f, 2.f);
-	s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
-	e->addComponent<TreasureComponent>();
-	auto p = e->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width + 10.f, s->getSprite().getLocalBounds().height + 10.f));
-	Engine::GetActiveScene()->ents.list.push_back(e);
-	return e;
+	make_breakable_walls();
+	auto block = Engine::GetActiveScene()->ents.find("breakable")[0];
+	block->GetCompatibleComponent<TileComponent>()[0]->SetTreasure();
 }

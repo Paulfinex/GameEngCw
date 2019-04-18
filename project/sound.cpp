@@ -62,7 +62,7 @@ void SoundEffects::stop_timer()
 }
 void SoundEffects::play_groove()
 {
-	grooveMusicSound.setVolume(volume);
+	grooveMusicSound.setVolume(main_theme_volume);
 	grooveMusicSound.setBuffer(grooveMusicBuffer);
 	grooveMusicSound.play();
 	grooveMusicSound.setLoop(true);
@@ -132,4 +132,8 @@ void SoundEffects::setVolume(int level)
 	volume = level;
 }
 
+void SoundEffects::setVolumeMainTheme(int level)
+{
+	main_theme_volume = level;
+}
 

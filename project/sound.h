@@ -33,6 +33,7 @@ private:
 	sf::Sound ghostSpawnSound;
 
 	double volume = 50.f;
+	double main_theme_volume = 30.0f;
 public:
 	SoundEffects();
 	void stop_all();
@@ -53,5 +54,6 @@ public:
 	void play_ghost_detection();
 	void play_victory();
 	void setVolume(int level);
+	void setVolumeMainTheme(int level);
 };
 

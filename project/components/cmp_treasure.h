@@ -10,5 +10,5 @@ public:
 	void render() override {}
 	void update(double dt);
 	void TreasureComponent::PlayerLoot();
-	double delay = 0.5f;
+	double delay = 0.2f;
 };

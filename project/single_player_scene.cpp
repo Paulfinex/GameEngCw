@@ -70,7 +70,7 @@ void SinglePlayerScene::Load() {
 
 void SinglePlayerScene::AddGhost(std::shared_ptr<Entity> ghost)
 {
-	if (_ghosts.size() <= 15) {
+	if (_ghosts.size() <= 5) {
 		_ghosts.push_back(ghost);
 	}
 }
@@ -118,7 +118,7 @@ void SinglePlayerScene::Update(const double& dt) {
 
 		if(_delay <= 0)
 		{
-			if (_spawnTimer % 2 == 0 && _ghosts.size() <= 15)
+			if (_spawnTimer % 2 == 0 && _ghosts.size() <= 10)
 			{
 				s.stop_timer();
 				_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->_setHasTreasure(false);
