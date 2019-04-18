@@ -1,4 +1,5 @@
 #include "tutorial_scene.h"
+#include "levelsystem.h"
 #include "system_resources.h"
 #include "components/cmp_text.h"
 #include <SFML/Window/Keyboard.hpp>
@@ -16,12 +17,20 @@
 #include "components/cmp_enemy_ai.h"
 #include "components/cmp_physics.h"
 #include "components/cmp_tile.h"
+#include "components/cmp_treasure.h"
+#include "components/cmp_pathfind.h"
+#include "pathfinder.h"
 extern SoundEffects s;
 
 using namespace std;
 using namespace sf;
+
+std::vector<std::shared_ptr<Entity>> TutorialScene::_ghost_list;
+bool timerCheck = true;
 void TutorialScene::Load()
 {
+
+	ls::loadLevelFile("res/maps/map0.txt", 60);
 	_delay = 0.3f;
 	float offSet = 45.0f;
 	_infoText = Engine::GetActiveScene()->makeEntity();
@@ -56,6 +65,23 @@ void TutorialScene::Update(const double & dt)
 		phase3();
 		break;
 	case 4:
+		phase4(dt);
+		for (auto _ghost : _ghost_list)
+		{
+			
+				auto char_relative = (Vector2i)_ghost->getPosition() - Vector2i(ls::getOffset());
+				auto char_tile = Vector2i(char_relative / (int)ls::getTileSize());
+				auto player_relative = _player->getPosition() - ls::getOffset();
+				auto player_tile = Vector2i(player_relative / ls::getTileSize());
+				auto path = pathFind(char_tile, player_tile);
+				_ghost->GetCompatibleComponent<PathfindingComponent>()[0]->setPath(path);
+			
+			 if (_ghost->GetCompatibleComponent<EnemyAIComponent>()[0]->getState() == EnemyAIComponent::KILLING)
+			{
+				Engine::ChangeScene(&gameOverScreen);
+				break;
+			}
+		}
 		break;
 	default:
 		break;
@@ -106,13 +132,40 @@ void TutorialScene::phase3()
 	if (phase_3)
 	{
 		_infoText->GetCompatibleComponent<TextComponent>()[0]->SetText("Good Job! Breakable blocks have a random chance to drop a treasure, loot it and \n keep it safe for 20 seconds to win the level!");
-
+		tutorial_treasure();
 		phase_3 = false;
+	}
+	if (_player->GetCompatibleComponent<PlayerMovementComponent>()[0]->HasTreasure())
+	{
+		phase++;
 	}
 }
 
-void TutorialScene::phase4()
+void TutorialScene::phase4(const double& dt)
 {
+	if (phase_4)
+	{ 
+		Vector2f pos = { (_player->getPosition().x -100.f),(_player->getPosition().y-100.f) };
+		_ghost_list.push_back(make_ghost(1.2f, pos));
+		_infoText->GetCompatibleComponent<TextComponent>()[0]->SetText("A ghost has spawned to protect the treasure! RUN!\n Timer: " + to_string(timer));
+		phase_4 = false;
+	}
+	
+	if (timerCheck)
+		{
+			timerCheck = false;
+			s.play_timer();
+		}
+	if (timer > 0) { timer -= dt; _infoText->GetCompatibleComponent<TextComponent>()[0]->SetText("A ghost has spawned to protect the treasure! RUN!\n Timer: " + to_string(timer));
+	}
+
+
+	
+	if (timer <= 0)
+	{
+		s.stop_timer();
+		Engine::ChangeScene(&winScreen);
+	}
 }
 
 
@@ -192,6 +245,25 @@ std::shared_ptr<Entity> TutorialScene::tutorial_breakable()
 	t->getSprite().setScale(1.875f, 1.875f);
 	t->getSprite().setOrigin(t->getSprite().getLocalBounds().width / 2, t->getSprite().getLocalBounds().height / 2);
 	e->addComponent<TileComponent>();
+	Engine::GetActiveScene()->ents.list.push_back(e);
+	return e;
+}
+
+std::shared_ptr<Entity> TutorialScene::tutorial_treasure()
+{
+	auto e = Engine::GetActiveScene()->makeEntity();
+	e->addTag("treasure");
+	float x = Engine::GetWindow().getView().getSize().x / 2 + 250.f;
+	float y = Engine::GetWindow().getView().getSize().y / 2;
+	Vector2f pos = { x,y };
+	e->setPosition(pos);
+	auto s = e->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("treasure.png");
+	s->setTexture(tex);
+	s->getSprite().setScale(2.f, 2.f);
+	s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
+	e->addComponent<TreasureComponent>();
+	auto p = e->addComponent<PhysicsComponent>(true, Vector2f(s->getSprite().getLocalBounds().width + 10.f, s->getSprite().getLocalBounds().height + 10.f));
 	Engine::GetActiveScene()->ents.list.push_back(e);
 	return e;
 }

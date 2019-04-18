@@ -1,6 +1,7 @@
 #pragma once
 
-#include "engine.h"
+#include <SFML/Graphics.hpp>
+#include <engine.h>
 
 class TutorialScene : public Scene {
 public:
@@ -17,16 +18,17 @@ private:
 	std::shared_ptr<Entity> _player;
 	std::shared_ptr<Entity> _wall;
 	std::shared_ptr<Entity> _breakable;
+	std::shared_ptr<Entity> _treasure;
+	std::shared_ptr<Entity> _ghost;
+	static std::vector<std::shared_ptr<Entity>> _ghost_list;
 	float _offSet = 45.0f;
 	double _delay;
 	double _iteratorDelay;
 	std::shared_ptr<Entity> tutorial_player();
 	std::shared_ptr<Entity> tutorial_wall();
 	std::shared_ptr<Entity> tutorial_breakable();
-	bool tutorial_move = false;
-	bool tutorial_walls = false;
-	bool tutorial_treasure = false;
-	bool tutorial_ghost = false;
+	std::shared_ptr<Entity> tutorial_treasure();
+	std::shared_ptr<Entity> tutorial_ghost();
 	int phase = 1;
 	void phase1();
 	bool phase_1 = true;
@@ -34,7 +36,8 @@ private:
 	bool phase_2 = true;
 	void phase3();
 	bool phase_3 = true;
-	void phase4();
+	void phase4(const double& dt);
 	bool phase_4 = true;
+	float timer = 20.0f;
 
 };
