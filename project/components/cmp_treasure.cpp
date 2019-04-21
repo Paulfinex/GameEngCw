@@ -48,7 +48,6 @@ void TreasureComponent::update(double dt) {
 				}
 			} 
 		}
-		_players.clear();
 	}
 }
 

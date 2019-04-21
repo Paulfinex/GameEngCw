@@ -108,6 +108,7 @@ void SinglePlayerScene::Update(const double& dt) {
 			timerSoundCheck = false;
 			s.play_timer();
 		}
+
 		if (treasureSoundCheck)
 		{
 			treasureSoundCheck = false;
