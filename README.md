@@ -20,4 +20,5 @@
 5. Build and run it.
 
 Website: https://harbrus.itch.io/dig-it
+
 Playtest Reports (report a bug): https://docs.google.com/document/d/1rGg8w-A-XQymuYZOJIXoEyLI3zt2RsqD9JgYLTHDGlQ/edit?usp=sharing
