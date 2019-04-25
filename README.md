@@ -18,3 +18,5 @@
 4. Set PROJECT as a start up project.
 
 5. Build and run it.
+
+Playtest Reports (report a bug): https://docs.google.com/document/d/1rGg8w-A-XQymuYZOJIXoEyLI3zt2RsqD9JgYLTHDGlQ/edit?usp=sharing
