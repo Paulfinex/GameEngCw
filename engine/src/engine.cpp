@@ -117,12 +117,6 @@ void Engine::Start(unsigned int width, unsigned int height,
 	view.setSize(width, height);
 	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
 
-	#ifdef _DEBUG
-	{
-		setWindowedMode();
-	}
-	#endif
-
 	while (window.isOpen()) 
 	{
 		Event event;
