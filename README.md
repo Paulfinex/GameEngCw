@@ -1,3 +1,6 @@
+
+[![Build status](https://ci.appveyor.com/api/projects/status/jpq4daut2bci9vuq?svg=true)](https://ci.appveyor.com/project/Paulfinex/gameengcw)
+
 # Dig IT
 ## How to build the project
 
